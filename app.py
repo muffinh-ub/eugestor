@@ -92,7 +92,7 @@ def cur_chat(titulo_chat):
     id_chat = db.search("select id_chat from tbchat where id_user = %s and titulo_chat = %s", (id_usuario,titulo_chat), True)
     mensagens_chat = db.search("select role_mens as role, conteudo_mens as conteudo "
                                "from tbmensagem where id_chat = %s "
-                               "order by enviado_em limit 20", (id_chat["id_chat"],))
+                               "order by enviado_em", (id_chat["id_chat"],))
     chats = db.search("select titulo_chat from tbchat where id_user = %s order by criado_em desc", (id_usuario,))
 
     historico = []
