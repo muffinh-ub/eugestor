@@ -1,5 +1,6 @@
+import config
 from flask import Flask, render_template, session, request, redirect, url_for, jsonify
-from models import autenticacao, cadastrar, buscar_noticias, bolsa, config, sql
+from models import autenticacao, cadastrar, buscar_noticias, bolsa, sql
 from google import genai
 from google.genai import types
 

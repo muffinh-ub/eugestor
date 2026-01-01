@@ -1,7 +1,6 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from .sql import sql
-from .config import config
-import requests
+import requests, config
 
 db = sql()
 

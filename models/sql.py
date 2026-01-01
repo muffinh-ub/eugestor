@@ -1,6 +1,5 @@
-import psycopg as pg
+import psycopg as pg, config
 from psycopg.rows import dict_row
-from .config import config
 
 #classe
 class sql:
