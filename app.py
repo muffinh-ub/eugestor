@@ -1,13 +1,13 @@
-import config
+import os
 from flask import Flask, render_template, session, request, redirect, url_for, jsonify
 from models import autenticacao, cadastrar, buscar_noticias, bolsa, sql
 from google import genai
 from google.genai import types
 
 app = Flask(__name__)
-app.secret_key = config.get("app_secret_key")
+app.secret_key = os.getenv("app_secret_key")
 db = sql()
-client = genai.Client(api_key=config.get("gemini_key"))
+client = genai.Client(api_key=os.getenv("gemini_key"))
 model = "gemini-flash-lite-latest"
 
 
@@ -471,7 +471,7 @@ def post_cadastrar():
     session["codigo_verificacao"] = codigo
 
     remetente = "andrebezerra19099@gmail.com"
-    senha_google = config.get("google_key")
+    senha_google = os.getenv("google_key")
 
     msg = EmailMessage()
     msg['Subject'] = "Seu Código de Verificação - EuGestor"

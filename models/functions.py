@@ -1,6 +1,6 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from .sql import sql
-import requests, config
+import requests, os
 
 db = sql()
 
@@ -24,7 +24,7 @@ def autenticacao(email, senha):
 def buscar_noticias(limite=10):
     try:
         # Pega a chave 'api_news' do seu config
-        api_key = config.get("api_news")
+        api_key = os.getenv("api_news")
         url = f"https://api.marketaux.com/v1/news/all?api_token={api_key}&countries=br&language=pt&limit={limite}"
 
         resposta = requests.get(url)
@@ -38,7 +38,7 @@ def buscar_noticias(limite=10):
 
 def bolsa():
     try:
-        api_key = config.get("api_bolsa")
+        api_key = os.getenv("api_bolsa")
         url = f"https://brapi.dev/api/quote/list?token={api_key}"
 
         resposta = requests.get(url)

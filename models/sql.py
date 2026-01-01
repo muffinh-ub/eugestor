@@ -1,10 +1,10 @@
-import psycopg as pg, config
+import psycopg as pg, os
 from psycopg.rows import dict_row
 
 #classe
 class sql:
     def __init__(self):
-        senha = config.get("postgres_key")
+        senha = os.getenv("postgres_password")
         self.config = {
             "host": "dpg-d5bb7nruibrs73cc73r0-a.ohio-postgres.render.com",
             "user": "andre",
