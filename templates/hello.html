@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EuGestor - Gestão Financeira Moderna</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-orange: #E65100; /* Laranja Escuro */
+            --deep-black: #0F0F0F;
+            --card-gray: #1A1A1A;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--deep-black);
+            color: white;
+        }
+
+        /* Navbar Customizada */
+        .navbar {
+            border-bottom: 1px solid #333;
+        }
+
+        .navbar-brand {
+            color: var(--primary-orange) !important;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .btn-outline-orange {
+            border: 1px solid var(--primary-orange);
+            color: var(--primary-orange);
+        }
+
+        .btn-outline-orange:hover {
+            background-color: var(--primary-orange);
+            color: white;
+        }
+
+        .btn-orange {
+            background-color: var(--primary-orange);
+            color: white;
+            font-weight: 600;
+        }
+
+        .btn-orange:hover {
+            background-color: #ff6d00;
+            color: white;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 100px 0;
+            background: radial-gradient(circle at top right, rgba(230, 81, 0, 0.1), transparent);
+        }
+
+        .feature-card {
+            background-color: var(--card-gray);
+            border: 1px solid #333;
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-orange);
+        }
+
+        .icon-box {
+            font-size: 2rem;
+            color: var(--primary-orange);
+            margin-bottom: 1rem;
+        }
+
+        footer {
+            border-top: 1px solid #333;
+            padding: 2rem 0;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-dark navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">EuGestor</a>
+            <button class="navbar-toggler btn-outline-light border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="ms-auto d-flex gap-2">
+                    <a href="/login" class="btn btn-outline-orange px-4 border-2">Entrar</a>
+                    <a href="/cadastro" class="btn btn-orange px-4 border-2">Cadastrar</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-section text-center">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <h1 class="display-3 fw-bold mb-4">Sua saúde financeira em <span style="color: var(--primary-orange);">outro nível.</span></h1>
+                    <p class="lead mb-5 text-secondary">A EuGestor combina simplicidade e inteligência para você dominar seu dinheiro e focar no que realmente importa.</p>
+                    <a href="/cadastro" class="btn btn-orange btn-lg px-5 py-3 shadow">Começar Agora Gratuitamente</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Por que o EuGestor?</h2>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="card feature-card p-4 text-center">
+                        <div class="icon-box">
+                            <i class="bi bi-graph-up-arrow"></i>
+                        </div>
+                        <h4 class="h5 text-light">Análise em Tempo Real</h4>
+                        <p class="small text-secondary">Acompanhe seu fluxo de caixa e saldo acumulado com gráficos dinâmicos.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card feature-card p-4 text-center">
+                        <div class="icon-box">
+                            <i class="bi bi-robot"></i>
+                        </div>
+                        <h4 class="h5 text-light">Sugestões de IA</h4>
+                        <p class="small text-secondary">Receba conselhos da Luna, nossa IA focada em estratégias financeiras.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card feature-card p-4 text-center">
+                        <div class="icon-box">
+                            <i class="bi bi-shield-lock"></i>
+                        </div>
+                        <h4 class="h5 text-light">Totalmente Seguro</h4>
+                        <p class="small text-secondary">Seus dados são privados e protegidos com criptografia de ponta.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card feature-card p-4 text-center">
+                        <div class="icon-box">
+                            <i class="bi bi-lightning-charge"></i>
+                        </div>
+                        <h4 class="h5 text-light">Rápido e Direto</h4>
+                        <p class="small text-secondary">Interface limpa e rápida, feita para quem não tem tempo a perder.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="text-center">
+        <div class="container">
+            <p class="mb-0">&copy; 2025 JetMoney Consultoria</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

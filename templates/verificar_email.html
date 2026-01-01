@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificar E-mail | EuGestor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-orange: #E65100;
+            --deep-black: #0F0F0F;
+            --card-gray: #1A1A1A;
+            --input-bg: #252525;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--deep-black);
+            color: white;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #0f0f0f 100%);
+        }
+
+        .verify-card {
+            background-color: var(--card-gray);
+            border: 1px solid #333;
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            text-align: center;
+        }
+
+        .icon-circle {
+            width: 70px;
+            height: 70px;
+            background: rgba(230, 81, 0, 0.1);
+            color: var(--primary-orange);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1.5rem;
+        }
+
+        .brand-name {
+            color: var(--primary-orange);
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .email-display {
+            color: var(--primary-orange);
+            font-weight: 600;
+            background: rgba(230, 81, 0, 0.05);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .code-input {
+            background-color: var(--input-bg);
+            border: 2px solid #444;
+            color: white;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 10px;
+            text-align: center;
+            padding: 10px;
+            border-radius: 12px;
+            width: 100%;
+            margin: 1.5rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .code-input:focus {
+            outline: none;
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 15px rgba(230, 81, 0, 0.3);
+        }
+
+        .btn-orange {
+            background-color: var(--primary-orange);
+            border: none;
+            color: white;
+            font-weight: 700;
+            padding: 0.8rem;
+            width: 100%;
+            border-radius: 8px;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+        }
+
+        .btn-orange:hover {
+            background-color: #ff6d00;
+            transform: translateY(-2px);
+        }
+
+        .resend-text {
+            margin-top: 1.5rem;
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        .resend-text a {
+            color: #999;
+            text-decoration: none;
+        }
+
+        .resend-text a:hover {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="verify-card">
+        <div class="icon-circle">
+            <i class="bi bi-envelope-check"></i>
+        </div>
+
+        <a href="/" class="brand-name">EUGESTOR</a>
+
+        <h3 class="fw-bold mb-3">Verifique seu e-mail</h3>
+        <p class="text-secondary small">
+            Enviamos um código de 5 dígitos para <br>
+            <span class="email-display">{{ session['temp_email'] }}</span>
+        </p>
+
+        <form action="/validar_cod" method="POST">
+            <input type="text"
+                   name="codigo"
+                   class="code-input"
+                   placeholder="00000"
+                   maxlength="5"
+                   pattern="\d{5}"
+                   inputmode="numeric"
+                   autocomplete="one-time-code"
+                   required>
+
+            <button type="submit" class="btn btn-orange">Confirmar Cadastro</button>
+        </form>
+
+        <div class="resend-text">
+            Não recebeu o código? <br>
+            <a href="/cadastro">Tentar outro e-mail</a> ou verificar a pasta de spam.
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

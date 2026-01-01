@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EuGestor | B3 (Bolsa de Valores)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-orange: #E65100;
+            --deep-black: #0A0A0A;
+            --sidebar-bg: #121212;
+            --card-gray: #1E1E1E;
+            --text-muted: #A0A0A0;
+            --border-color: #2d2d2d;
+            --success-green: #2ecc71;
+            --danger-red: #e74c3c;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--deep-black);
+            color: white;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Reutilizada */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+        }
+
+        .sidebar-header {
+            padding: 2.5rem 2rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-orange);
+            letter-spacing: -1px;
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            padding: 14px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: white;
+            background: rgba(230, 81, 0, 0.08);
+            border-right: 3px solid var(--primary-orange);
+        }
+
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 3rem;
+        }
+
+        /* Container de Cards */
+        .market-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+            margin-top: 2rem;
+        }
+
+        .stock-card {
+            background-color: var(--card-gray);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stock-card:hover {
+            transform: translateY(-5px);
+            border-color: #444;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .logo {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            margin-bottom: 12px;
+            background: white;
+            padding: 5px;
+            border-radius: 8px;
+        }
+
+        .symbol {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: white;
+            display: block;
+            letter-spacing: 0.5px;
+        }
+
+        .name {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            height: 35px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        /* Estilo das Variações */
+        .variation-badge {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .pos { color: var(--success-green); background: rgba(46, 204, 113, 0.1); }
+        .neg { color: var(--danger-red); background: rgba(231, 76, 60, 0.1); }
+        .neutral { color: var(--text-muted); background: rgba(160, 160, 160, 0.1); }
+
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">EuGestor</div>
+        <nav class="flex-column">
+            <a href="/home" class="nav-link"><i class="bi bi-house-door"></i> <span>Home</span></a>
+            <a href="/b3" class="nav-link active"><i class="bi bi-graph-up-arrow"></i> <span>Bolsa (B3)</span></a>
+            <hr class="mx-3" style="border-color: #333;">
+            <a href="/logout" class="nav-link text-danger"><i class="bi bi-box-arrow-right"></i> <span>Sair</span></a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="fw-bold mb-1">Mercado Financeiro</h1>
+                <p class="text-secondary mb-0">Cotações em tempo real da B3.</p>
+            </div>
+            <div class="text-end">
+                <span class="badge bg-dark border border-secondary text-secondary p-2">
+                    <i class="bi bi-clock-history me-2"></i>Live
+                </span>
+            </div>
+        </div>
+
+        <div class="market-grid">
+            {% if b3 %}
+                {% for acao in b3 %}
+                    {% set variacao = acao.change if acao.change is not none else 0 %}
+                    {% set preco = acao.close if acao.close is not none else 0 %}
+
+                    <div class="stock-card">
+                        <img src="{{ acao.logo }}" alt="Logo" class="logo" onerror="this.src='https://via.placeholder.com/50/222/FFF?text=B3'">
+
+                        <span class="symbol">{{ acao.stock }}</span>
+                        <div class="name">{{ acao.name }}</div>
+
+                        <div class="price">R$ {{ "%.2f"|format(preco) }}</div>
+
+                        <div class="variation-badge {% if variacao > 0 %}pos{% elif variacao < 0 %}neg{% else %}neutral{% endif %}">
+                            <i class="bi {{ 'bi-caret-up-fill' if variacao > 0 else ('bi-caret-down-fill' if variacao < 0 else 'bi-dash') }}"></i>
+                            {{ "%.2f"|format(variacao) }}%
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-5 w-100 grid-span-all" style="grid-column: 1 / -1;">
+                    <i class="bi bi-cloud-slash fs-1 text-secondary"></i>
+                    <p class="text-secondary mt-3">Nenhum dado disponível no momento. Tente atualizar a página.</p>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

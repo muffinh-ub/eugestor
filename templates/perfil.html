@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil | EuGestor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-orange: #E65100;
+            --deep-black: #0A0A0A;
+            --sidebar-bg: #121212;
+            --card-gray: #1E1E1E;
+            --text-muted: #A0A0A0;
+            --border-color: #2d2d2d;
+            --danger-red: #c0392b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--deep-black);
+            color: white;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Simplificada */
+        .sidebar {
+            width: 240px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+        }
+
+        .sidebar-header {
+            padding: 2.5rem 2rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-orange);
+            letter-spacing: -1px;
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            padding: 14px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .nav-link:hover {
+            color: white;
+            background: rgba(230, 81, 0, 0.08);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 240px;
+            flex: 1;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .profile-card {
+            background-color: var(--card-gray);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 550px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: var(--primary-orange);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 auto 1.5rem;
+        }
+
+        .form-label {
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        .form-control {
+            background-color: #252525;
+            border: 1px solid var(--border-color);
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 1.2rem;
+        }
+
+        .form-control:focus {
+            background-color: #252525;
+            color: white;
+            border-color: var(--primary-orange);
+            box-shadow: none;
+        }
+
+        .btn-save {
+            background-color: var(--primary-orange);
+            color: white;
+            font-weight: 700;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            width: 100%;
+            transition: 0.3s;
+            margin-top: 1rem;
+        }
+
+        .btn-save:hover {
+            background-color: #ff6d00;
+            transform: translateY(-2px);
+        }
+
+        .danger-zone {
+            margin-top: 2.5rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .btn-delete {
+            background: transparent;
+            color: var(--danger-red);
+            border: 1px solid var(--danger-red);
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .btn-delete:hover {
+            background: var(--danger-red);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">EuGestor</div>
+        <nav class="flex-column">
+            <a href="/home" class="nav-link"><i class="bi bi-house"></i> <span>Home</span></a>
+            <a href="/perfil" class="nav-link"><i class="bi bi-person"></i> <span>Perfil</span></a>
+            <hr class="mx-3" style="border-color: #333;">
+            <a href="/logout" class="nav-link text-danger"><i class="bi bi-box-arrow-right"></i> <span>Sair</span></a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <div class="profile-card">
+            <div class="profile-avatar">
+                {{ session['usuario']['nome_user'][0].upper() }}
+            </div>
+
+            <h3 class="text-center fw-bold mb-4">Configurações de Perfil</h3>
+
+            <form action="/post_perfil" method="POST">
+                <div class="mb-3">
+                    <label for="nome" class="form-label">Nome Completo</label>
+                    <input type="text" id="nome" name="nome" class="form-control" value="{{ session['usuario']['nome_user'] }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">E-mail</label>
+                    <input type="email" id="email" name="email" class="form-control" value="{{ session['usuario']['email_user'] }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="senha" class="form-label">Nova Senha</label>
+                    <input type="password" id="senha" name="senha" class="form-control" placeholder="Deixe em branco para manter a atual">
+                </div>
+
+                <button type="submit" class="btn-save shadow">Salvar Alterações</button>
+            </form>
+
+            <div class="danger-zone">
+                <p class="text-light small mb-3">Deseja encerrar sua jornada no EuGestor?</p>
+                <button onclick="confirmar()" class="btn-delete">
+                    <i class="bi bi-trash3 me-2"></i>Deletar minha conta
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function confirmar() {
+            if (confirm("ATENÇÃO: Esta ação é irreversível. Todos os seus dados financeiros serão apagados. Deseja continuar?")) {
+                window.location = "/deletar_conta";
+            }
+        }
+    </script>
+</body>
+</html>
