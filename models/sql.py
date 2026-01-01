@@ -1,15 +1,16 @@
 import psycopg as pg
 from psycopg.rows import dict_row
+from .config import config
 
 #classe
 class sql:
     def __init__(self):
-        senha = "post"
+        senha = config.get("postgres_key")
         self.config = {
-            "host": "localhost",
-            "user": "postgres",
+            "host": "dpg-d5bb7nruibrs73cc73r0-a.ohio-postgres.render.com",
+            "user": "andre",
             "password": senha,
-            "dbname": "dbjetmoney",
+            "dbname": "dbjetmoney_zy68",
             "port": 5432
         }
 
