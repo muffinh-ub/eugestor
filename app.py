@@ -27,6 +27,25 @@ def home():
     noticias_mercado = buscar_noticias(5)
     return render_template("home.html", noticias=noticias_mercado)
 
+@app.route("/pro")
+def pro():
+    if not session.get("usuario"):
+        return redirect(url_for("login"))
+    return render_template("pro.html")
+
+
+@app.route("/atualizacoes")
+def atualizacoes_eugestor():
+    if not session.get("usuario"):
+        return redirect(url_for("login"))
+
+    updates = db.search("select * from tbatualizacao order by enviado_em desc")
+    return render_template("atualizacao.html", updates=updates)
+
+
+@app.route("/postar_atualizacao")
+def postar_atualizacao():
+    return render_template("postar_atualizacao.html")
 
 @app.route("/login")
 def login():
@@ -56,6 +75,8 @@ def b3():
 #carrega todos os chats para o usuario selecionar
 @app.route("/chat")
 def chat():
+    if not session.get("usuario"):
+        return redirect(url_for("login"))
     id_usuario = session.get("usuario")["id_user"]
     chats = db.search("select titulo_chat from tbchat where id_user = %s order by criado_em desc", (id_usuario,))
     return render_template("chat.html", chats=chats)
@@ -105,10 +126,10 @@ def extrato():
     else:
         condicao_valor = ""
 
-    transacoes = db.search("select timestamp(data_transacao) ,descricao_transacao, categoria_transacao, "
+    transacoes = db.search("select data_transacao::timestamp ,descricao_transacao, categoria_transacao, "
                            "forma_pagamento_transacao, valor_transacao "
                            "from tbtransacao where id_user = %s "
-                          f"{condicao_valor} and date(data_transacao) = %s "
+                          f"{condicao_valor} and data_transacao::date = %s "
                           "order by data_transacao desc", #str sql
                            (id_usuario, data)) #parametros
 
@@ -177,7 +198,8 @@ def dashboard():
     #Luna
     try:
         transacoes = db.search(
-            "select date(data_transacao) as data, descricao_transacao, categoria_transacao, valor_transacao from tbtransacao where id_user = %s order by data desc limit 50",
+            "select date(data_transacao) as data, descricao_transacao, categoria_transacao, valor_transacao "
+            "from tbtransacao where id_user = %s order by data desc",
             (id_usuario,))
 
         if transacoes:
@@ -207,6 +229,24 @@ def dashboard():
                            sugestao=sugestao)
 
 #--- Rotas de processamento ---
+
+
+@app.route("/post_postar_atualizacao", methods=["POST"])
+def post_postar_atualizacao():
+    if not session.get("usuario") or session.get("usuario")["is_admin"] != True:
+        return redirect(url_for("home"))
+
+    id_admin = session.get("usuario")["id_user"]
+    versao = request.form.get("versao")
+    palavra_chave = request.form.get("palavra_chave")
+    titulo = request.form.get("titulo")
+    descricao = request.form.get("descricao")
+
+    db.execute("insert into tbatualizacao (id_user, versao_atualizacao, palavra_chave_atualizacao, titulo_atualizacao, descricao_atualizacao) "
+               "values (%s, %s, %s, %s, %s)", (id_admin,versao, palavra_chave, titulo, descricao))
+
+    return ("<script>alert('Atualização lançada com sucesso!');"
+            "window.location = '/postar_atualizacao';</script>")
 
 @app.route("/validar_cod", methods=["POST"])
 def validar_cod():

@@ -146,12 +146,16 @@
         .neg { color: var(--danger-red); background: rgba(231, 76, 60, 0.1); }
         .neutral { color: var(--text-muted); background: rgba(160, 160, 160, 0.1); }
 
+        .eugestor-link {
+            text-decoration: none;
+            color: var(--primary-orange);
+        }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div class="sidebar-header">EuGestor</div>
+        <div class="sidebar-header"><a href="/atualizacoes" class="eugestor-link">EuGestor</a></div>
         <nav class="flex-column">
             <a href="/home" class="nav-link"><i class="bi bi-house-door"></i> <span>Home</span></a>
             <a href="/b3" class="nav-link active"><i class="bi bi-graph-up-arrow"></i> <span>Bolsa (B3)</span></a>
