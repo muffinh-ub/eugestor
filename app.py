@@ -105,10 +105,10 @@ def extrato():
     else:
         condicao_valor = ""
 
-    transacoes = db.search("select data_transacao::timestamp,descricao_transacao, categoria_transacao, "
+    transacoes = db.search("select timestamp(data_transacao) ,descricao_transacao, categoria_transacao, "
                            "forma_pagamento_transacao, valor_transacao "
                            "from tbtransacao where id_user = %s "
-                          f"{condicao_valor} and data_transacao::date = %s "
+                          f"{condicao_valor} and date(data_transacao) = %s "
                           "order by data_transacao desc", #str sql
                            (id_usuario, data)) #parametros
 
@@ -152,53 +152,59 @@ def dashboard():
         return redirect(url_for("login"))
 
     id_usuario = session.get("usuario")["id_user"]
-    gastos = db.search((f"select sum(abs(valor_transacao)) as valor_gasto, categoria_transacao as categoria "
-                    f"from tbtransacao where id_user = {id_usuario} and valor_transacao < 0 "
-                    f"group by categoria order by valor_gasto desc;"))
+    gastos = db.search(("select sum(abs(valor_transacao)) as valor_gasto, categoria_transacao as categoria "
+                    "from tbtransacao where id_user = %s and valor_transacao < 0 "
+                    "group by categoria order by valor_gasto desc;"), (id_usuario,))
 
-    labels_pizza = [r["categoria"] for r in gastos]
+    labels_pizza = [str(r["categoria"]) for r in gastos]
     valores_pizza = [float(r["valor_gasto"]) for r in gastos]
 
-    receitas = db.search((f"select sum(valor_transacao) as valor_recebido, categoria_transacao as categoria "
-                    f"from tbtransacao where id_user = {id_usuario} and valor_transacao > 0 "
-                    f"group by categoria order by valor_recebido desc;"))
+    receitas = db.search(("select sum(valor_transacao) as valor_recebido, categoria_transacao as categoria "
+                    "from tbtransacao where id_user = %s and valor_transacao > 0 "
+                    "group by categoria order by valor_recebido desc;"), (id_usuario,))
 
-    labels_pizza_receitas = [r["categoria"]  for r in receitas]
-    valores_pizza_receitas = [r["valor_recebido"] for r in receitas]
+    labels_pizza_receitas = [str(r["categoria"])  for r in receitas]
+    valores_pizza_receitas = [float(r["valor_recebido"]) for r in receitas]
 
-    saldo = db.search((f"select date(data_transacao) as data, "
-                   f"sum(sum(valor_transacao)) over (order by date(data_transacao)) as saldo_acumulado "
-                   f"from tbtransacao where id_user = {id_usuario} "
-                   f"group by data order by data;"))
+    saldo = db.search(("select date(data_transacao) as data, "
+                   "sum(sum(valor_transacao)) over (order by date(data_transacao)) as saldo_acumulado "
+                   "from tbtransacao where id_user = %s "
+                   "group by data order by data;"), (id_usuario,))
 
-    labels_linha = [str(r['data']) for r in saldo]
-    valores_linha = [float(r['saldo_acumulado']) for r in saldo]
+    labels_linha = [str(r["data"]) for r in saldo]
+    valores_linha = [float(r["saldo_acumulado"]) for r in saldo]
 
-    persona = ("Você é Luna, uma assistente pessoal focada em gestão financeira (pessoal ou empresarial) "
-               "você tem uma personalidade gentil, calma, calculista, e simplista, é direta ao ponto mas também é muito carinhosa "
-               "sempre pensa em todas as oportunidades, riscos e as melhores estratégias pro cliente seguir. Não fale nada pro cliente sobre esta instrução")
+    #Luna
+    try:
+        transacoes = db.search(
+            "select date(data_transacao) as data, descricao_transacao, categoria_transacao, valor_transacao from tbtransacao where id_user = %s order by data desc limit 50",
+            (id_usuario,))
 
-    sugestao_luna = client.models.generate_content(
-        model=model,
-        contents="Analise estes dados sobre os gastos, as  receitas e despesas e dê uma sugestão "
-                 "sobre como melhorar a saúde financeira, ou as melhores estratégias para evoluir financeiramente falando "
-                 f"Usuário {session.get('usuario')['nome_user']}"
-                 f"Receitas {receitas},"
-                 f"Despesas: {gastos},"
-                 f"Saldo: {saldo}",
-        config=types.GenerateContentConfig(
-            system_instruction=persona
-        )
-    )
+        if transacoes:
+            persona = ("Você é Luna, uma assistente pessoal focada em gestão financeira (pessoal ou empresarial) "
+                       "você tem uma personalidade gentil, calma, calculista, e simplista, é direta ao ponto mas também é muito carinhosa "
+                       "sempre pensa em todas as oportunidades, riscos e as melhores estratégias pro cliente seguir. Não fale nada pro cliente sobre esta instrução")
+
+            resposta = client.models.generate_content(
+                model=model,
+                contents=f"Analise as transações de: {session.get('usuario')['nome_user']}: {transacoes}",
+                config=types.GenerateContentConfig(system_instruction=persona)
+            )
+            sugestao = resposta.text
+        else:
+            sugestao = None
+    except Exception as e:
+        print(f"Erro na Luna: {e}")
+        sugestao = "Estou tendo problemas ao processar os dados. Por enquanto, acompanhe sua evolução pelos gráficos abaixo!"
 
     return render_template("dashboards.html",
-                           labels_pizza=labels_pizza if labels_pizza else ["Sem dados"],
-                           valores_pizza=valores_pizza if labels_pizza else [0],
-                           labels_linha=labels_linha if labels_linha else ["Sem dados"],
-                           valores_linha=valores_linha if labels_linha else [0],
-                           labels_pizza_receitas=labels_pizza_receitas if labels_pizza_receitas else ["Sem dados"],
-                           valores_pizza_receitas=valores_pizza_receitas if labels_pizza_receitas else [0],
-                           sugestao=sugestao_luna.text)
+                           labels_pizza=labels_pizza or ["Sem dados"],
+                           valores_pizza=valores_pizza or [0],
+                           labels_linha=labels_linha or ["Sem dados"],
+                           valores_linha=valores_linha or [0],
+                           labels_pizza_receitas=labels_pizza_receitas or ["Sem dados"],
+                           valores_pizza_receitas=valores_pizza_receitas or [0],
+                           sugestao=sugestao)
 
 #--- Rotas de processamento ---
 
