@@ -290,7 +290,7 @@ def enviar():
     id_chat = res_chat["id_chat"]
     mensagens = db.search("select role_mens as role, conteudo_mens as conteudo "
                              "from tbmensagem where id_chat = %s "
-                             "order by enviado_em limit 20", (id_chat,))
+                             "order by enviado_em limit 20 desc", (id_chat,))
     historico = []
     for mens in mensagens:
         estrutura_mensagem = {
