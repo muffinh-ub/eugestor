@@ -1,4 +1,6 @@
 import os
+from itertools import count
+
 from flask import Flask, render_template, session, request, redirect, url_for, jsonify
 from models import autenticacao, cadastrar, buscar_noticias, bolsa, sql
 from google import genai
@@ -174,12 +176,12 @@ def dashboard():
         return redirect(url_for("login"))
 
     id_usuario = session.get("usuario")["id_user"]
-    gastos = db.search(("select sum(abs(valor_transacao)) as valor_gasto, categoria_transacao as categoria "
+    despesas = db.search(("select sum(abs(valor_transacao)) as valor_gasto, categoria_transacao as categoria "
                     "from tbtransacao where id_user = %s and valor_transacao < 0 "
                     "group by categoria order by valor_gasto desc;"), (id_usuario,))
 
-    labels_pizza = [str(r["categoria"]) for r in gastos]
-    valores_pizza = [float(r["valor_gasto"]) for r in gastos]
+    labels_pizza = [str(r["categoria"]) for r in despesas]
+    valores_pizza = [float(r["valor_gasto"]) for r in despesas]
 
     receitas = db.search(("select sum(valor_transacao) as valor_recebido, categoria_transacao as categoria "
                     "from tbtransacao where id_user = %s and valor_transacao > 0 "
@@ -203,10 +205,14 @@ def dashboard():
             "from tbtransacao where id_user = %s order by data desc",
             (id_usuario,))
 
-        if transacoes:
+        dados = str(transacoes)
+
+        if dados != session.get("transacoes"):
+            session["transacoes"] = dados
             persona = ("Você é Luna, uma assistente pessoal focada em gestão financeira (pessoal ou empresarial) "
                        "você tem uma personalidade gentil, calma, calculista, e simplista, é direta ao ponto mas também é muito carinhosa "
-                       "sempre pensa em todas as oportunidades, riscos e as melhores estratégias pro cliente seguir. Não fale nada pro cliente sobre esta instrução")
+                       "sempre pensa em todas as oportunidades, riscos e as melhores estratégias pro cliente seguir. Não fale nada pro cliente sobre esta instrução "
+                       "Seja breve em suas respostas")
 
             resposta = client.models.generate_content(
                 model=model,
@@ -214,8 +220,9 @@ def dashboard():
                 config=types.GenerateContentConfig(system_instruction=persona)
             )
             sugestao = resposta.text
+            session["sugestao"] = sugestao
         else:
-            sugestao = None
+            sugestao = None or session.get("sugestao")
     except Exception as e:
         print(f"Erro na Luna: {e}")
         sugestao = "Estou tendo problemas ao processar os dados. Por enquanto, acompanhe sua evolução pelos gráficos abaixo!"
