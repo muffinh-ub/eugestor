@@ -16,7 +16,7 @@
             --card-gray: #1E1E1E;
             --input-bg: #252525;
             --text-muted: #A0A0A0;
-            --border-color: #333;
+            --border-color: #222;
         }
 
         body {
@@ -28,7 +28,7 @@
             min-height: 100vh;
         }
 
-        /* Sidebar padrão do tema */
+        /* Sidebar - Padrão Identico à Home */
         .sidebar {
             width: 260px;
             background-color: var(--sidebar-bg);
@@ -37,13 +37,16 @@
             flex-direction: column;
             position: fixed;
             height: 100vh;
+            z-index: 1000;
+            transition: all 0.3s;
         }
 
         .sidebar-header {
-            padding: 2.5rem 2rem;
+            padding: 2rem;
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--primary-orange);
+            text-align: center;
         }
 
         .nav-link {
@@ -53,39 +56,42 @@
             align-items: center;
             gap: 12px;
             transition: all 0.3s;
+            border-left: 4px solid transparent;
             text-decoration: none;
         }
 
         .nav-link:hover, .nav-link.active {
             color: white;
             background: rgba(230, 81, 0, 0.1);
+            border-left-color: var(--primary-orange);
         }
 
         /* Área de Conteúdo */
         .main-content {
             margin-left: 260px;
             flex: 1;
-            padding: 3rem;
+            padding: 2rem;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s;
         }
 
         .form-card {
             background-color: var(--card-gray);
             border: 1px solid var(--border-color);
             border-radius: 20px;
-            padding: 2.5rem;
+            padding: 2rem;
             width: 100%;
             max-width: 600px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-top: 4px solid var(--primary-orange);
         }
 
         .form-label {
             color: var(--text-muted);
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         .form-control, .form-select {
@@ -100,12 +106,11 @@
             background-color: var(--input-bg);
             color: white;
             border-color: var(--primary-orange);
-            box-shadow: 0 0 0 0.25rem rgba(230, 81, 0, 0.2);
+            box-shadow: none;
         }
 
-        /* Destaque para o valor */
         .valor-input {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: 700;
             color: var(--primary-orange);
             text-align: center;
@@ -122,10 +127,7 @@
             transition: 0.3s;
         }
 
-        .btn-save:hover {
-            background-color: #ff6d00;
-            transform: translateY(-2px);
-        }
+        .btn-save:hover { background-color: #ff6d00; }
 
         .btn-clear {
             background: transparent;
@@ -136,95 +138,111 @@
             font-size: 0.9rem;
         }
 
-        .btn-clear:hover { color: #888; }
+        .eugestor-link { text-decoration: none; color: var(--primary-orange); }
 
-        .eugestor-link {
-            text-decoration: none;
-            color: var(--primary-orange);
+        /* RESPONSIVIDADE MOBILE - IDENTICA À HOME */
+        @media (max-width: 768px) {
+            .sidebar { width: 70px; }
+            .sidebar-header, .nav-link span { display: none; }
+            .main-content { margin-left: 70px; padding: 1.5rem; }
+
+            .nav-link { justify-content: center; padding: 15px 0; border-left: none; }
+            .nav-link.active { background: rgba(230, 81, 0, 0.2); border-left: none; }
+
+            .form-card { padding: 1.2rem; }
+            .valor-input { font-size: 1.5rem; }
         }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div class="sidebar-header"><a href="/atualizacoes" class="eugestor-link">EuGestor</a></div>
+        <div class="sidebar-header">
+            <a href="/atualizacoes" class="eugestor-link">EuGestor</a>
+        </div>
         <nav class="flex-column">
-            <a href="/home" class="nav-link"><i class="bi bi-house"></i> <span>Home</span></a>
-            <a href="/transacao" class="nav-link active"><i class="bi bi-plus-circle"></i> <span>Nova Transação</span></a>
-            <a href="/extrato" class="nav-link"><i class="bi bi-list-columns"></i> <span>Extrato</span></a>
+            <a href="/home" class="nav-link">
+                <i class="bi bi-house"></i> <span>Home</span>
+            </a>
+            <a href="/transacao" class="nav-link active">
+                <i class="bi bi-plus-circle"></i> <span>Nova Transação</span>
+            </a>
+            <a href="/extrato" class="nav-link">
+                <i class="bi bi-list-columns"></i> <span>Extrato</span>
+            </a>
             <hr class="mx-3" style="border-color: #333;">
-            <a href="/logout" class="nav-link text-danger"><i class="bi bi-box-arrow-right"></i> <span>Sair</span></a>
+            <a href="/logout" class="nav-link text-danger">
+                <i class="bi bi-box-arrow-right"></i> <span>Sair</span>
+            </a>
         </nav>
     </aside>
 
     <main class="main-content">
         <div class="form-card">
             <div class="text-center mb-4">
-                <i class="bi bi-cash-stack text-warning fs-1"></i>
-                <h2 class="fw-bold mt-2">Registrar Movimentação</h2>
-                <p class="text-secondary small">Mantenha seu fluxo de caixa sempre atualizado.</p>
+                <i class="bi bi-plus-circle-dotted text-warning fs-1"></i>
+                <h2 class="fw-bold mt-2">Nova Transação</h2>
+                <p class="text-secondary small">Cadastre ganhos ou gastos rapidamente.</p>
             </div>
 
             <form action="/post_transacao" method="POST">
                 <div class="row g-3">
-                    <div class="col-12 mb-3 text-center">
-                        <label for="valor" class="form-label d-block">Valor R$</label>
+                    <div class="col-12 mb-3">
+                        <label for="valor" class="form-label d-block text-center">Valor</label>
                         <input type="number" step="0.01" name="valor" id="valor" class="form-control valor-input" placeholder="0,00" required>
-                        <small class="text-secondary">Use "+" para entradas e "-" para saídas</small>
+                        <div class="text-center mt-2">
+                            <span class="badge bg-success-subtle text-success">+ Ganho</span>
+                            <span class="badge bg-danger-subtle text-danger">- Gasto</span>
+                        </div>
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <label for="categoria" class="form-label">Categoria</label>
                         <select name="categoria" id="categoria" class="form-select" required onchange="verificarOutros(this)">
-                            <option value="" selected disabled>Selecione</option>
+                            <option value="" selected disabled>Escolha...</option>
                             <optgroup label="Despesas">
                                 <option value="alimentação">Alimentação</option>
-                                <option value="assinaturas/serviços">Assinaturas / Serviços</option>
-                                <option value="casa/aluguel">Casa / Aluguel</option>
-                                <option value="educação">Educação</option>
-                                <option value="lazer">Lazer / Viagens</option>
-                                <option value="saúde">Saúde</option>
-                                <option value="transporte">Transporte / Combustível</option>
-                                <option value="vestuário">Vestuário</option>
+                                <option value="assinaturas">Assinaturas</option>
+                                <option value="casa">Casa</option>
+                                <option value="lazer">Lazer</option>
+                                <option value="transporte">Transporte</option>
                             </optgroup>
                             <optgroup label="Receitas">
                                 <option value="salário">Salário</option>
                                 <option value="investimentos">Investimentos</option>
-                                <option value="presente/recompensa">Presente / Recompensa</option>
                             </optgroup>
                             <option value="outros">Outros</option>
                         </select>
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label for="data" class="form-label">Data e Hora</label>
+                        <label for="data" class="form-label">Data</label>
                         <input type="datetime-local" name="data" id="data" class="form-control" required>
                     </div>
 
                     <div id="campo_outros" class="col-12 mb-3" style="display: none;">
-                        <label for="outra_categoria" class="form-label">Especifique a categoria</label>
-                        <input type="text" name="outra_categoria" id="outra_categoria" class="form-control" placeholder="Ex: Doação, Conserto...">
+                        <label for="outra_categoria" class="form-label">Qual categoria?</label>
+                        <input type="text" name="outra_categoria" id="outra_categoria" class="form-control">
                     </div>
 
                     <div class="col-12 mb-3">
-                        <label for="pagamento" class="form-label">Forma de Pagamento</label>
+                        <label for="pagamento" class="form-label">Método</label>
                         <select name="pagamento" id="pagamento" class="form-select" required>
-                            <option value="" selected disabled>Selecione o método</option>
+                            <option value="pix">PIX</option>
                             <option value="dinheiro">Dinheiro</option>
                             <option value="cartao_credito">Cartão de Crédito</option>
                             <option value="cartao_debito">Cartão de Débito</option>
-                            <option value="pix">PIX</option>
                         </select>
                     </div>
 
                     <div class="col-12 mb-4">
-                        <label for="descricao" class="form-label">Descrição (Opcional)</label>
-                        <textarea name="descricao" id="descricao" rows="2" class="form-control" placeholder="Ex: Almoço no shopping..."></textarea>
+                        <label for="descricao" class="form-label">Descrição</label>
+                        <textarea name="descricao" id="descricao" rows="2" class="form-control" placeholder="Opcional"></textarea>
                     </div>
 
                     <div class="col-12">
-                        <button type="submit" class="btn-save shadow">Salvar Transação</button>
-                        <button type="reset" class="btn-clear" onclick="document.getElementById('campo_outros').style.display = 'none'">Limpar campos</button>
+                        <button type="submit" class="btn-save">Registrar Transação</button>
+                        <button type="reset" class="btn-clear">Limpar</button>
                     </div>
                 </div>
             </form>
@@ -232,7 +250,6 @@
     </main>
 
     <script>
-        // Define a data atual por padrão
         window.onload = function() {
             const now = new Date();
             now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
@@ -241,16 +258,8 @@
 
         function verificarOutros(select) {
             const campoOutros = document.getElementById("campo_outros");
-            const inputOutros = document.getElementById("outra_categoria");
-
-            if (select.value === "outros") {
-                campoOutros.style.display = "block";
-                inputOutros.required = true;
-            } else {
-                campoOutros.style.display = "none";
-                inputOutros.required = false;
-                inputOutros.value = "";
-            }
+            document.getElementById("outra_categoria").required = select.value === "outros";
+            campoOutros.style.display = select.value === "outros" ? "block" : "none";
         }
     </script>
 </body>

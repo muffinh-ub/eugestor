@@ -15,7 +15,7 @@
             --sidebar-bg: #121212;
             --card-gray: #1E1E1E;
             --text-muted: #A0A0A0;
-            --border-color: #2d2d2d;
+            --border-color: #222;
             --danger-red: #c0392b;
         }
 
@@ -28,48 +28,53 @@
             min-height: 100vh;
         }
 
-        /* Sidebar Simplificada */
+        /* SIDEBAR PADRÃO DA HOME */
         .sidebar {
-            width: 240px;
+            width: 260px;
             background-color: var(--sidebar-bg);
             border-right: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             position: fixed;
             height: 100vh;
+            z-index: 1000;
+            transition: all 0.3s;
         }
 
         .sidebar-header {
-            padding: 2.5rem 2rem;
+            padding: 2rem;
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--primary-orange);
-            letter-spacing: -1px;
+            text-align: center;
         }
 
         .nav-link {
             color: var(--text-muted);
-            padding: 14px 25px;
+            padding: 12px 25px;
             display: flex;
             align-items: center;
             gap: 12px;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
             text-decoration: none;
         }
 
-        .nav-link:hover {
+        .nav-link:hover, .nav-link.active {
             color: white;
-            background: rgba(230, 81, 0, 0.08);
+            background: rgba(230, 81, 0, 0.1);
+            border-left-color: var(--primary-orange);
         }
 
-        /* Main Content */
+        /* CONTEÚDO PRINCIPAL */
         .main-content {
-            margin-left: 240px;
+            margin-left: 260px;
             flex: 1;
-            padding: 3rem;
+            padding: 2rem;
             display: flex;
             flex-direction: column;
             align-items: center;
+            transition: all 0.3s;
         }
 
         .profile-card {
@@ -80,6 +85,7 @@
             width: 100%;
             max-width: 550px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-top: 4px solid var(--primary-orange);
         }
 
         .profile-avatar {
@@ -99,8 +105,9 @@
         .form-label {
             color: var(--text-muted);
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .form-control {
@@ -109,7 +116,6 @@
             color: white;
             padding: 12px;
             border-radius: 10px;
-            margin-bottom: 1.2rem;
         }
 
         .form-control:focus {
@@ -124,24 +130,13 @@
             color: white;
             font-weight: 700;
             border: none;
-            padding: 12px;
+            padding: 14px;
             border-radius: 10px;
             width: 100%;
             transition: 0.3s;
-            margin-top: 1rem;
         }
 
-        .btn-save:hover {
-            background-color: #ff6d00;
-            transform: translateY(-2px);
-        }
-
-        .danger-zone {
-            margin-top: 2.5rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--border-color);
-            text-align: center;
-        }
+        .btn-save:hover { background-color: #ff6d00; }
 
         .btn-delete {
             background: transparent;
@@ -149,30 +144,44 @@
             border: 1px solid var(--danger-red);
             padding: 8px 20px;
             border-radius: 8px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             transition: all 0.3s;
         }
 
-        .btn-delete:hover {
-            background: var(--danger-red);
-            color: white;
-        }
+        .btn-delete:hover { background: var(--danger-red); color: white; }
 
-        .eugestor-link {
-            text-decoration: none;
-            color: var(--primary-orange);
+        .eugestor-link { text-decoration: none; color: var(--primary-orange); }
+
+        /* AJUSTE MOBILE - IGUAL À HOME */
+        @media (max-width: 768px) {
+            .sidebar { width: 70px; }
+            .sidebar-header, .nav-link span { display: none; }
+            .main-content { margin-left: 70px; padding: 1.5rem; }
+
+            .nav-link { justify-content: center; padding: 15px 0; border-left: none; }
+            .nav-link.active { background: rgba(230, 81, 0, 0.2); border-left: none; }
+
+            .profile-card { padding: 1.5rem; }
         }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div class="sidebar-header"><a href="/atualizacoes" class="eugestor-link">EuGestor</a></div>
+        <div class="sidebar-header">
+            <a href="/atualizacoes" class="eugestor-link">EuGestor</a>
+        </div>
         <nav class="flex-column">
-            <a href="/home" class="nav-link"><i class="bi bi-house"></i> <span>Home</span></a>
-            <a href="/perfil" class="nav-link"><i class="bi bi-person"></i> <span>Perfil</span></a>
+            <a href="/home" class="nav-link">
+                <i class="bi bi-house-door"></i> <span>Home</span>
+            </a>
+            <a href="/perfil" class="nav-link active">
+                <i class="bi bi-person"></i> <span>Perfil</span>
+            </a>
             <hr class="mx-3" style="border-color: #333;">
-            <a href="/logout" class="nav-link text-danger"><i class="bi bi-box-arrow-right"></i> <span>Sair</span></a>
+            <a href="/logout" class="nav-link text-danger">
+                <i class="bi bi-box-arrow-right"></i> <span>Sair</span>
+            </a>
         </nav>
     </aside>
 
@@ -182,7 +191,7 @@
                 {{ session['usuario']['nome_user'][0].upper() }}
             </div>
 
-            <h3 class="text-center fw-bold mb-4">Configurações de Perfil</h3>
+            <h3 class="text-center fw-bold mb-4">Configurações</h3>
 
             <form action="/post_perfil" method="POST">
                 <div class="mb-3">
@@ -195,18 +204,18 @@
                     <input type="email" id="email" name="email" class="form-control" value="{{ session['usuario']['email_user'] }}" required>
                 </div>
 
-                <div class="mb-3">
+                <div class="mb-4">
                     <label for="senha" class="form-label">Nova Senha</label>
-                    <input type="password" id="senha" name="senha" class="form-control" placeholder="Deixe em branco para manter a atual">
+                    <input type="password" id="senha" name="senha" class="form-control" placeholder="Deixe em branco para manter">
                 </div>
 
-                <button type="submit" class="btn-save shadow">Salvar Alterações</button>
+                <button type="submit" class="btn-save">Salvar Alterações</button>
             </form>
 
-            <div class="danger-zone">
-                <p class="text-light small mb-3">Deseja encerrar sua jornada no EuGestor?</p>
+            <div class="text-center mt-5 pt-4 border-top border-secondary border-opacity-25">
+                <p class="text-muted small mb-3">Deseja excluir sua conta?</p>
                 <button onclick="confirmar()" class="btn-delete">
-                    <i class="bi bi-trash3 me-2"></i>Deletar minha conta
+                    <i class="bi bi-trash3 me-1"></i>Deletar Conta
                 </button>
             </div>
         </div>
@@ -214,7 +223,7 @@
 
     <script>
         function confirmar() {
-            if (confirm("ATENÇÃO: Esta ação é irreversível. Todos os seus dados financeiros serão apagados. Deseja continuar?")) {
+            if (confirm("ATENÇÃO: Todos os seus dados financeiros serão apagados permanentemente. Deseja continuar?")) {
                 window.location = "/deletar_conta";
             }
         }

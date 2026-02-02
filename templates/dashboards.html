@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EuGestor | Dashboard Financeiro</title>
+    <title>EuGestor | Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
             --sidebar-bg: #121212;
             --card-gray: #1E1E1E;
             --text-muted: #A0A0A0;
-            --border-color: #2d2d2d;
+            --border-color: #222;
         }
 
         body {
@@ -28,46 +28,50 @@
             min-height: 100vh;
         }
 
-        /* Sidebar Simplificada */
+        /* Sidebar - Padrão Identico à Home */
         .sidebar {
-            width: 240px;
+            width: 260px;
             background-color: var(--sidebar-bg);
             border-right: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             position: fixed;
             height: 100vh;
+            z-index: 1000;
+            transition: all 0.3s;
         }
 
         .sidebar-header {
-            padding: 2.5rem 2rem;
+            padding: 2rem;
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--primary-orange);
-            letter-spacing: -1px;
+            text-align: center;
         }
 
         .nav-link {
             color: var(--text-muted);
-            padding: 14px 25px;
+            padding: 12px 25px;
             display: flex;
             align-items: center;
             gap: 12px;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
             text-decoration: none;
         }
 
         .nav-link:hover, .nav-link.active {
             color: white;
-            background: rgba(230, 81, 0, 0.08);
-            border-right: 4px solid var(--primary-orange);
+            background: rgba(230, 81, 0, 0.1);
+            border-left-color: var(--primary-orange);
         }
 
         /* Conteúdo Dashboard */
         .main-content {
-            margin-left: 240px;
+            margin-left: 260px;
             flex: 1;
-            padding: 3rem;
+            padding: 2rem;
+            transition: all 0.3s;
         }
 
         .chart-card {
@@ -75,42 +79,31 @@
             border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            height: 100%;
+            margin-bottom: 1rem;
         }
 
         .chart-card h3 {
-            font-size: 1rem;
-            font-weight: 600;
+            font-size: 0.85rem;
+            font-weight: 700;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 1.5rem;
         }
 
-        /* Card da Luna Especial */
+        /* Card Luna AI */
         .luna-analysis-card {
             background: linear-gradient(135deg, #1e1e1e 0%, #15101a 100%);
             border-left: 5px solid var(--primary-orange);
             border-radius: 16px;
-            padding: 2rem;
+            padding: 1.5rem;
             margin-top: 1rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .luna-analysis-card::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 4px; height: 100%;
-            background: var(--card-gray);
         }
 
         .luna-title {
             color: var(--primary-orange);
             font-weight: 700;
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -118,47 +111,57 @@
 
         .luna-text {
             color: #e0e0e0;
-            line-height: 1.6;
-            font-size: 1rem;
-            white-space: pre-wrap;
+            line-height: 1.5;
+            font-size: 0.95rem;
         }
 
-        canvas { width: 100% !important; }
+        .eugestor-link { text-decoration: none; color: var(--primary-orange); }
 
-        .eugestor-link {
-            text-decoration: none;
-            color: var(--primary-orange);
+        /* RESPONSIVIDADE MOBILE - IDENTICA À HOME */
+        @media (max-width: 768px) {
+            .sidebar { width: 70px; }
+            .sidebar-header, .nav-link span { display: none; }
+            .main-content { margin-left: 70px; padding: 1.2rem; }
+
+            .nav-link { justify-content: center; padding: 15px 0; border-left: none; }
+            .nav-link.active { background: rgba(230, 81, 0, 0.2); border-left: none; }
+
+            .chart-card { padding: 1rem; }
+            canvas { height: 250px !important; } /* Garante altura mínima pros gráficos no celular */
         }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div class="sidebar-header"><a href="/atualizacoes" class="eugestor-link">EuGestor</a></div>
+        <div class="sidebar-header">
+            <a href="/atualizacoes" class="eugestor-link">EuGestor</a>
+        </div>
         <nav class="flex-column">
-            <a href="/home" class="nav-link"><i class="bi bi-house"></i> <span>Home</span></a>
-            <a href="/dashboard" class="nav-link"><i class="bi bi-clipboard2-data"></i> <span>Dashboard</span></a>
+            <a href="/home" class="nav-link">
+                <i class="bi bi-house-door"></i> <span>Home</span>
+            </a>
+            <a href="/dashboard" class="nav-link active">
+                <i class="bi bi-clipboard2-data"></i> <span>Dashboard</span>
+            </a>
             <hr class="mx-3" style="border-color: #333;">
-            <a href="/logout" class="nav-link text-danger"><i class="bi bi-box-arrow-right"></i> <span>Sair</span></a>
+            <a href="/logout" class="nav-link text-danger">
+                <i class="bi bi-box-arrow-right"></i> <span>Sair</span>
+            </a>
         </nav>
     </aside>
 
     <main class="main-content">
-        <div class="d-flex justify-content-between align-items-end mb-4">
-            <div>
-                <h1 class="fw-bold mb-1">Dashboard Financeiro</h1>
-                <p class="text-secondary mb-0">Visão geral do seu patrimônio e fluxo de caixa.</p>
-            </div>
-            <a href="/home" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
-                <i class="bi bi-arrow-left me-1"></i> Voltar
-            </a>
-        </div>
+        <header class="mb-4">
+            <h1 class="fw-bold h3">Dashboard</h1>
+            <p class="text-secondary small">Patrimônio e fluxo de caixa.</p>
+        </header>
 
-        <div class="row g-4">
+        <div class="row g-3">
             <div class="col-12">
                 <div class="chart-card">
-                    <h3><i class="bi bi-graph-up text-light me-2"></i>Evolução do Saldo Acumulado</h3>
-                    <div style="height: 300px;">
+                    <h3><i class="bi bi-graph-up text-warning me-2"></i>Evolução de Saldo</h3>
+                    <div style="position: relative; height: 300px;">
                         <canvas id="line-chart"></canvas>
                     </div>
                 </div>
@@ -166,8 +169,8 @@
 
             <div class="col-md-6">
                 <div class="chart-card">
-                    <h3><i class="bi bi-pie-chart text-danger me-2"></i>Saídas por Categoria</h3>
-                    <div style="height: 250px;">
+                    <h3><i class="bi bi-arrow-down-circle text-danger me-2"></i>Gastos por Categoria</h3>
+                    <div style="position: relative; height: 250px;">
                         <canvas id="pizza-chart"></canvas>
                     </div>
                 </div>
@@ -175,41 +178,36 @@
 
             <div class="col-md-6">
                 <div class="chart-card">
-                    <h3><i class="bi bi-pie-chart-fill text-success me-2"></i>Entradas por Categoria</h3>
-                    <div style="height: 250px;">
+                    <h3><i class="bi bi-arrow-up-circle text-success me-2"></i>Entradas por Categoria</h3>
+                    <div style="position: relative; height: 250px;">
                         <canvas id="receitas-chart"></canvas>
                     </div>
                 </div>
             </div>
 
             <div class="col-12">
-                <div class="luna-analysis-card shadow-lg">
+                <div class="luna-analysis-card">
                     <div class="luna-title">
                         <i class="bi bi-stars"></i> Insights da Luna AI
                     </div>
-                    <div class="luna-text">{{ sugestao if sugestao else "Registre ao menos uma transação para gerar uma análise personalizada" }}</div>
+                    <div class="luna-text">{{ sugestao if sugestao else "Aguardando mais transações para análise..." }}</div>
                 </div>
             </div>
         </div>
     </main>
 
     <script>
-        // Configurações Globais do Chart.js para Tema Escuro
         Chart.defaults.color = '#A0A0A0';
-        Chart.defaults.borderColor = '#2d2d2d';
+        Chart.defaults.borderColor = '#222';
 
         const opt = {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: { padding: 20, usePointStyle: true }
-                }
+                legend: { position: 'bottom', labels: { padding: 20, usePointStyle: true } }
             }
         };
 
-        // Gráfico de Saldo
         new Chart(document.getElementById('line-chart'), {
             type: 'line',
             data: {
@@ -220,21 +218,12 @@
                     borderColor: '#E65100',
                     backgroundColor: 'rgba(230, 81, 0, 0.1)',
                     fill: true,
-                    tension: 0.4,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#E65100'
+                    tension: 0.4
                 }]
             },
-            options: {
-                ...opt,
-                scales: {
-                    y: { beginAtZero: false, grid: { borderDash: [5, 5] } },
-                    x: { grid: { display: false } }
-                }
-            }
+            options: opt
         });
 
-        // Gráfico de Gastos (Cores Quentes/Alerta)
         new Chart(document.getElementById('pizza-chart'), {
             type: 'doughnut',
             data: {
@@ -248,7 +237,6 @@
             options: { ...opt, cutout: '70%' }
         });
 
-        // Gráfico de Receitas (Cores Frias/Positivas)
         new Chart(document.getElementById('receitas-chart'), {
             type: 'doughnut',
             data: {
