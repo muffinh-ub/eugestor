@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Administrativo | EuGestor</title>
+    <title>Admin | EuGestor</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -15,7 +15,7 @@
             --sidebar-bg: #121212;
             --card-gray: #1E1E1E;
             --text-muted: #A0A0A0;
-            --border-color: #2d2d2d;
+            --border-color: #222;
         }
 
         body {
@@ -23,11 +23,10 @@
             background-color: var(--deep-black);
             color: white;
             margin: 0;
-            display: flex;
             min-height: 100vh;
         }
 
-        /* Sidebar - Mantendo padrão da Home */
+        /* Sidebar - Estilo Identico a Home */
         .sidebar {
             width: 260px;
             background-color: var(--sidebar-bg);
@@ -37,6 +36,7 @@
             position: fixed;
             height: 100vh;
             z-index: 1000;
+            transition: all 0.3s;
         }
 
         .sidebar-header {
@@ -61,80 +61,115 @@
         .nav-link:hover, .nav-link.active {
             color: white;
             background: rgba(230, 81, 0, 0.1);
-            border-left: 4px solid var(--primary-orange);
+            border-left-color: var(--primary-orange);
         }
 
+        /* Conteúdo Principal */
         .main-content {
             margin-left: 260px;
-            flex: 1;
             padding: 2rem;
+            transition: all 0.3s;
         }
 
-        /* Estilos do Painel ADM */
-        .stat-box {
-            background: var(--card-gray);
-            border: 1px solid var(--border-color);
-            padding: 24px;
-            border-radius: 16px;
-            transition: transform 0.3s ease;
-        }
-
+        /* Cards e UI */
         .admin-card {
             background-color: var(--card-gray);
             border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 20px;
-            margin-top: 2rem;
+            border-radius: 12px;
+            padding: 1.5rem;
         }
 
+        .stat-box {
+            background: linear-gradient(145deg, #1e1e1e, #141414);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-orange);
+        }
+
+        /* Tabela Customizada */
         .table-custom {
-            margin-bottom: 0;
-            background-color: var(--card-gray) !important;
-            color: #e0e0e0 !important;
+            color: white;
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
         }
 
         .table-custom th {
-            color: var(--primary-orange);
-            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.8rem;
             text-transform: uppercase;
-            padding: 15px !important;
+            padding: 12px;
             border-bottom: 1px solid var(--border-color);
-            background-color: var(--card-gray) !important;
         }
 
         .table-custom td {
-            padding: 15px !important;
-            background-color: var(--card-gray) !important;
-            border-bottom: 1px solid var(--border-color);
+            background-color: #181818;
+            padding: 12px;
+            vertical-align: middle;
         }
 
-        .badge-admin { background-color: var(--primary-orange); color: white; padding: 6px 12px; }
-        .badge-user { background-color: #333; color: #aaa; padding: 6px 12px; }
+        .table-custom tr td:first-child { border-radius: 8px 0 0 8px; }
+        .table-custom tr td:last-child { border-radius: 0 8px 8px 0; }
 
         .btn-adm {
-            border: 1px solid var(--primary-orange);
+            background: rgba(230, 81, 0, 0.1);
             color: var(--primary-orange);
+            border: 1px solid var(--primary-orange);
             font-size: 0.8rem;
-            font-weight: 600;
-            border-radius: 8px;
-            background: transparent;
+            padding: 5px 15px;
+            border-radius: 6px;
+            transition: 0.3s;
+        }
+
+        .btn-adm:hover { background: var(--primary-orange); color: white; }
+
+        /* RESPONSIVIDADE TOTAL */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .sidebar-header { padding: 1rem; }
+
+            .nav {
+                flex-direction: row !important;
+                justify-content: center;
+                overflow-x: auto;
+                padding-bottom: 5px;
+            }
+
+            .nav-link {
+                padding: 10px 15px;
+                flex-direction: column;
+                gap: 5px;
+                font-size: 0.7rem;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+            }
+
+            .nav-link.active {
+                border-left-color: transparent;
+                border-bottom-color: var(--primary-orange);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            /* Esconder colunas menos importantes na tabela mobile */
+            .hide-mobile { display: none; }
+
+            .table-custom td { font-size: 0.85rem; }
         }
 
         .eugestor-link { text-decoration: none; color: var(--primary-orange); }
-
-        /* AJUSTE MOBILE - IGUAL À HOME */
-        @media (max-width: 768px) {
-            .sidebar { width: 70px; }
-            .sidebar-header, .nav-link span { display: none; }
-            .main-content { margin-left: 70px; padding: 1.5rem; }
-            .nav-link { justify-content: center; padding: 15px 0; border-left: none; }
-            .nav-link.active { border-left: none; background: rgba(230, 81, 0, 0.2); }
-
-            /* Ajuste para tabela não quebrar layout no celular */
-            .table-responsive { border: none; }
-            .d-flex.justify-content-between { flex-direction: column; align-items: flex-start !important; }
-            .text-end { text-align: left !important; margin-top: 1rem; }
-        }
     </style>
 </head>
 <body>
@@ -148,12 +183,11 @@
                 <i class="bi bi-house-door"></i> <span>Home</span>
             </a>
             <a href="/adm" class="nav-link active">
-                <i class="bi bi-shield-lock"></i> <span>Administrador</span>
+                <i class="bi bi-shield-lock"></i> <span>Admin</span>
             </a>
             <a href="/postar_atualizacao" class="nav-link">
-                <i class="bi bi-send"></i> <span>Enviar atualização</span>
+                <i class="bi bi-send"></i> <span>Postar</span>
             </a>
-            <hr class="mx-3" style="border-color: #333;">
             <a href="/logout" class="nav-link text-danger">
                 <i class="bi bi-box-arrow-right"></i> <span>Sair</span>
             </a>
@@ -161,64 +195,54 @@
     </aside>
 
     <main class="main-content">
-        <div class="d-flex justify-content-between align-items-end mb-5">
-            <div>
-                <h1 class="fw-bold mb-1">Painel Administrativo</h1>
-                <p class="text-secondary mb-0">Controle de acesso e métricas da plataforma.</p>
-            </div>
-            <div class="text-end">
-                <span class="badge bg-dark border border-secondary text-secondary p-2 px-3">
-                    <i class="bi bi-person-badge me-2"></i>Admin: {{ session['usuario']['nome_user'] }}
-                </span>
-            </div>
-        </div>
+        <header class="mb-4">
+            <h1 class="fw-bold h3">Painel Administrativo</h1>
+            <p class="text-secondary">Gerenciamento de usuários e sistema.</p>
+        </header>
 
-        <div class="row">
-            <div class="col-md-4 mb-4">
+        <div class="row mb-4">
+            <div class="col-md-4">
                 <div class="stat-box">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="text-secondary small text-uppercase fw-bold">Total de Usuários</span>
-                        <i class="bi bi-people fs-4 text-warning"></i>
-                    </div>
-                    <h2 class="fw-bold mb-0 text-white">
-                        {{ total_usuarios['total'] if total_usuarios is mapping else total_usuarios }}
-                    </h2>
+                    <span class="text-muted small fw-bold text-uppercase">Total Usuários</span>
+                    <h2 class="fw-bold mb-0">{{ total_usuarios }}</h2>
                 </div>
             </div>
         </div>
 
-        <div class="admin-card">
-            <h5 class="mb-4 fw-bold"><i class="bi bi-list-stars text-warning me-2"></i>Gerenciar Usuários</h5>
+        <section class="admin-card">
+            <h5 class="fw-bold mb-4">Lista de Usuários</h5>
             <div class="table-responsive">
-                <table class="table table-custom">
+                <table class="table-custom">
                     <thead>
                         <tr>
-                            <th>Nome</th>
+                            <th>Usuário</th>
+                            <th class="hide-mobile">Email</th>
                             <th>Status</th>
-                            <th class="text-center">Ações</th>
+                            <th>Ação</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for u in usuarios %}
                         <tr>
                             <td>
-                                <div class="fw-semibold text-white">{{ u.nome_user }}</div>
-                                <div class="small text-muted">{{ u.email_user }}</div>
+                                <div class="fw-bold">{{ u.nome_user }}</div>
+                                <div class="d-block d-md-none text-muted small">{{ u.email_user }}</div>
                             </td>
+                            <td class="hide-mobile text-muted">{{ u.email_user }}</td>
                             <td>
                                 {% if u.is_admin %}
-                                    <span class="badge badge-admin rounded-pill">ADM</span>
+                                    <span class="text-warning small fw-bold">ADMIN</span>
                                 {% else %}
-                                    <span class="badge badge-user rounded-pill">User</span>
+                                    <span class="text-secondary small">USER</span>
                                 {% endif %}
                             </td>
-                            <td class="text-center">
+                            <td>
                                 {% if not u.is_admin %}
-                                    <button onclick="confirmarPromocao({{ u.id_user }}, '{{ u.nome_user }}')" class="btn btn-adm px-2">
-                                        Tornar ADM
+                                    <button onclick="confirmarPromocao({{ u.id_user }}, '{{ u.nome_user }}')" class="btn-adm">
+                                        <i class="bi bi-arrow-up-short"></i> <span class="hide-mobile">Promover</span>
                                     </button>
                                 {% else %}
-                                    <i class="bi bi-person-check-fill text-success"></i>
+                                    <i class="bi bi-check-circle-fill text-success ms-2"></i>
                                 {% endif %}
                             </td>
                         </tr>
@@ -226,12 +250,12 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+        </section>
     </main>
 
     <script>
         function confirmarPromocao(id, nome) {
-            if (confirm("Deseja realmente transformar " + nome + " em Administrador?")) {
+            if (confirm("Promover " + nome + " para Administrador?")) {
                 window.location.href = "/promover_admin/" + id;
             }
         }
