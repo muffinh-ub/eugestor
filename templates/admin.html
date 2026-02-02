@@ -27,6 +27,7 @@
             min-height: 100vh;
         }
 
+        /* Sidebar - Mantendo padrão da Home */
         .sidebar {
             width: 260px;
             background-color: var(--sidebar-bg);
@@ -35,49 +36,47 @@
             flex-direction: column;
             position: fixed;
             height: 100vh;
+            z-index: 1000;
         }
 
         .sidebar-header {
-            padding: 2.5rem 2rem;
+            padding: 2rem;
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--primary-orange);
-            letter-spacing: -1px;
+            text-align: center;
         }
 
         .nav-link {
             color: var(--text-muted);
-            padding: 14px 25px;
+            padding: 12px 25px;
             display: flex;
             align-items: center;
             gap: 12px;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
             text-decoration: none;
-            font-size: 0.95rem;
         }
 
         .nav-link:hover, .nav-link.active {
             color: white;
-            background: rgba(230, 81, 0, 0.08);
-            border-right: 3px solid var(--primary-orange);
+            background: rgba(230, 81, 0, 0.1);
+            border-left: 4px solid var(--primary-orange);
         }
 
         .main-content {
             margin-left: 260px;
             flex: 1;
-            padding: 3rem;
+            padding: 2rem;
         }
 
+        /* Estilos do Painel ADM */
         .stat-box {
             background: var(--card-gray);
             border: 1px solid var(--border-color);
             padding: 24px;
             border-radius: 16px;
             transition: transform 0.3s ease;
-        }
-
-        .stat-box:hover {
-            transform: translateY(-5px);
         }
 
         .admin-card {
@@ -88,28 +87,16 @@
             margin-top: 2rem;
         }
 
-        /* Tabela Customizada */
-        .table-responsive {
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-        }
-
         .table-custom {
             margin-bottom: 0;
             background-color: var(--card-gray) !important;
             color: #e0e0e0 !important;
         }
 
-        .table-custom thead {
-            background-color: #252525;
-        }
-
         .table-custom th {
             color: var(--primary-orange);
             font-size: 0.75rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
             padding: 15px !important;
             border-bottom: 1px solid var(--border-color);
             background-color: var(--card-gray) !important;
@@ -119,11 +106,6 @@
             padding: 15px !important;
             background-color: var(--card-gray) !important;
             border-bottom: 1px solid var(--border-color);
-            color: #d1d1d1;
-        }
-
-        .table-custom tr:last-child td {
-            border-bottom: none;
         }
 
         .badge-admin { background-color: var(--primary-orange); color: white; padding: 6px 12px; }
@@ -136,35 +118,45 @@
             font-weight: 600;
             border-radius: 8px;
             background: transparent;
-            transition: all 0.3s;
         }
 
-        .btn-adm:hover {
-            background-color: var(--primary-orange);
-            color: white;
-            box-shadow: 0 4px 12px rgba(230, 81, 0, 0.2);
-        }
+        .eugestor-link { text-decoration: none; color: var(--primary-orange); }
 
-        .i {
-            color: var(--primary-orange);
-        }
+        /* AJUSTE MOBILE - IGUAL À HOME */
+        @media (max-width: 768px) {
+            .sidebar { width: 70px; }
+            .sidebar-header, .nav-link span { display: none; }
+            .main-content { margin-left: 70px; padding: 1.5rem; }
+            .nav-link { justify-content: center; padding: 15px 0; border-left: none; }
+            .nav-link.active { border-left: none; background: rgba(230, 81, 0, 0.2); }
 
-        .eugestor-link {
-            text-decoration: none;
-            color: var(--primary-orange);
+            /* Ajuste para tabela não quebrar layout no celular */
+            .table-responsive { border: none; }
+            .d-flex.justify-content-between { flex-direction: column; align-items: flex-start !important; }
+            .text-end { text-align: left !important; margin-top: 1rem; }
         }
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div class="sidebar-header"><a href="/atualizacoes" class="eugestor-link">EuGestor</a></div>
-        <nav class="flex-column">
-            <a href="/home" class="nav-link"><i class="bi bi-house-door"></i> <span>Home</span></a>
-            <a href="/adm" class="nav-link active"><i class="bi bi-shield-lock"></i> <span>Administrador</span></a>
-            <a href="/postar_atualizacao" class="nav-link"><i class="bi bi-send"></i> <span>Enviar atualização</span></a>
+        <div class="sidebar-header">
+            <a href="/atualizacoes" class="eugestor-link">EuGestor</a>
+        </div>
+        <nav class="nav flex-column">
+            <a href="/home" class="nav-link">
+                <i class="bi bi-house-door"></i> <span>Home</span>
+            </a>
+            <a href="/adm" class="nav-link active">
+                <i class="bi bi-shield-lock"></i> <span>Administrador</span>
+            </a>
+            <a href="/postar_atualizacao" class="nav-link">
+                <i class="bi bi-send"></i> <span>Enviar atualização</span>
+            </a>
             <hr class="mx-3" style="border-color: #333;">
-            <a href="/logout" class="nav-link text-danger"><i class="bi bi-box-arrow-right"></i> <span>Sair</span></a>
+            <a href="/logout" class="nav-link text-danger">
+                <i class="bi bi-box-arrow-right"></i> <span>Sair</span>
+            </a>
         </nav>
     </aside>
 
@@ -182,11 +174,11 @@
         </div>
 
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-4 mb-4">
                 <div class="stat-box">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <span class="text-secondary small text-uppercase fw-bold">Total de Usuários</span>
-                        <i class="bi bi-people fs-4"></i>
+                        <i class="bi bi-people fs-4 text-warning"></i>
                     </div>
                     <h2 class="fw-bold mb-0 text-white">
                         {{ total_usuarios['total'] if total_usuarios is mapping else total_usuarios }}
@@ -196,14 +188,12 @@
         </div>
 
         <div class="admin-card">
-            <h5 class="mb-4 fw-bold px-2"><i class="bi bi-list-stars text-warning me-2"></i>Gerenciar Usuários</h5>
+            <h5 class="mb-4 fw-bold"><i class="bi bi-list-stars text-warning me-2"></i>Gerenciar Usuários</h5>
             <div class="table-responsive">
                 <table class="table table-custom">
                     <thead>
                         <tr>
-                            <th>ID</th>
                             <th>Nome</th>
-                            <th>Email</th>
                             <th>Status</th>
                             <th class="text-center">Ações</th>
                         </tr>
@@ -211,23 +201,24 @@
                     <tbody>
                         {% for u in usuarios %}
                         <tr>
-                            <td class="text-secondary font-monospace">#{{ u.id_user }}</td>
-                            <td class="fw-semibold text-white">{{ u.nome_user }}</td>
-                            <td>{{ u.email_user }}</td>
+                            <td>
+                                <div class="fw-semibold text-white">{{ u.nome_user }}</div>
+                                <div class="small text-muted">{{ u.email_user }}</div>
+                            </td>
                             <td>
                                 {% if u.is_admin %}
-                                    <span class="badge badge-admin rounded-pill">Administrador</span>
+                                    <span class="badge badge-admin rounded-pill">ADM</span>
                                 {% else %}
-                                    <span class="badge badge-user rounded-pill">Usuário Comum</span>
+                                    <span class="badge badge-user rounded-pill">User</span>
                                 {% endif %}
                             </td>
                             <td class="text-center">
                                 {% if not u.is_admin %}
-                                    <button onclick="confirmarPromocao({{ u.id_user }}, '{{ u.nome_user }}')" class="btn btn-adm px-3">
+                                    <button onclick="confirmarPromocao({{ u.id_user }}, '{{ u.nome_user }}')" class="btn btn-adm px-2">
                                         Tornar ADM
                                     </button>
                                 {% else %}
-                                    <i class="bi bi-person-gear i"></i>
+                                    <i class="bi bi-person-check-fill text-success"></i>
                                 {% endif %}
                             </td>
                         </tr>
@@ -245,6 +236,5 @@
             }
         }
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

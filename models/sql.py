@@ -6,10 +6,10 @@ class sql:
     def __init__(self):
         senha = os.getenv("postgres_password")
         self.config = {
-            "host": "dpg-d5bb7nruibrs73cc73r0-a.ohio-postgres.render.com",
-            "user": "andre",
+            "host": "db.buubxiiouqkoleodrdgd.supabase.co",
+            "user": "postgres",
             "password": senha,
-            "dbname": "dbjetmoney_zy68",
+            "dbname": "postgres",
             "port": 5432
         }
 
