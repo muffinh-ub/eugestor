@@ -6,11 +6,11 @@ class sql:
     def __init__(self):
         senha = os.getenv("postgres_password")
         self.config = {
-            "host": "db.buubxiiouqkoleodrdgd.supabase.co",
-            "user": "postgres",
+            "host": "aws-1-sa-east-1.pooler.supabase.com",
+            "user": "postgres.buubxiiouqkoleodrdgd",
             "password": senha,
             "dbname": "postgres",
-            "port": 5432
+            "port": 6543
         }
 
     def execute(self, query, params=None):
