@@ -167,7 +167,7 @@ def adm():
     return render_template("admin.html",
                            usuarios=usuarios,
                            transacoes=ultimas_transacoes,
-                           total_usuarios=total_usuarios)
+                           total_usuarios=total_usuarios["total"])
 
 
 @app.route("/dashboard")

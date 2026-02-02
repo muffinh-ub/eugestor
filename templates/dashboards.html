@@ -24,11 +24,10 @@
             background-color: var(--deep-black);
             color: white;
             margin: 0;
-            display: flex;
             min-height: 100vh;
         }
 
-        /* Sidebar - Padrão Identico à Home */
+        /* Sidebar Corrigida - Cobre a tela toda verticalmente */
         .sidebar {
             width: 260px;
             background-color: var(--sidebar-bg);
@@ -36,18 +35,28 @@
             display: flex;
             flex-direction: column;
             position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0; /* Garante que vá até o fim da tela */
             height: 100vh;
             z-index: 1000;
             transition: all 0.3s;
         }
 
         .sidebar-header {
-            padding: 2rem;
+            padding: 2.5rem 1rem;
             font-size: 1.5rem;
             font-weight: 700;
-            color: var(--primary-orange);
             text-align: center;
         }
+
+        .eugestor-link {
+            text-decoration: none;
+            color: var(--primary-orange);
+            transition: color 0.3s;
+        }
+
+        .eugestor-link:hover { color: white; }
 
         .nav-link {
             color: var(--text-muted);
@@ -66,11 +75,11 @@
             border-left-color: var(--primary-orange);
         }
 
-        /* Conteúdo Dashboard */
+        /* Conteúdo Dashboard ajustado para a Sidebar Fixed */
         .main-content {
             margin-left: 260px;
-            flex: 1;
             padding: 2rem;
+            min-height: 100vh;
             transition: all 0.3s;
         }
 
@@ -80,6 +89,7 @@
             border-radius: 16px;
             padding: 1.5rem;
             margin-bottom: 1rem;
+            height: 100%;
         }
 
         .chart-card h3 {
@@ -98,6 +108,7 @@
             border-radius: 16px;
             padding: 1.5rem;
             margin-top: 1rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
         .luna-title {
@@ -107,27 +118,24 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            font-size: 1.1rem;
         }
 
         .luna-text {
             color: #e0e0e0;
-            line-height: 1.5;
+            line-height: 1.6;
             font-size: 0.95rem;
+            white-space: pre-wrap; /* Preserva as quebras de linha da Luna */
         }
 
-        .eugestor-link { text-decoration: none; color: var(--primary-orange); }
-
-        /* RESPONSIVIDADE MOBILE - IDENTICA À HOME */
+        /* RESPONSIVIDADE MOBILE */
         @media (max-width: 768px) {
             .sidebar { width: 70px; }
             .sidebar-header, .nav-link span { display: none; }
             .main-content { margin-left: 70px; padding: 1.2rem; }
 
-            .nav-link { justify-content: center; padding: 15px 0; border-left: none; }
-            .nav-link.active { background: rgba(230, 81, 0, 0.2); border-left: none; }
-
-            .chart-card { padding: 1rem; }
-            canvas { height: 250px !important; } /* Garante altura mínima pros gráficos no celular */
+            .nav-link { justify-content: center; padding: 20px 0; border-left: none; }
+            .nav-link.active { background: rgba(230, 81, 0, 0.2); }
         }
     </style>
 </head>
@@ -135,7 +143,7 @@
 
     <aside class="sidebar">
         <div class="sidebar-header">
-            <a href="/atualizacoes" class="eugestor-link">EuGestor</a>
+            <a href="/home" class="eugestor-link">EuGestor</a>
         </div>
         <nav class="flex-column">
             <a href="/home" class="nav-link">
@@ -154,7 +162,7 @@
     <main class="main-content">
         <header class="mb-4">
             <h1 class="fw-bold h3">Dashboard</h1>
-            <p class="text-secondary small">Patrimônio e fluxo de caixa.</p>
+            <p class="text-secondary small">Análise de patrimônio e insights da Luna AI.</p>
         </header>
 
         <div class="row g-3">
@@ -188,15 +196,16 @@
             <div class="col-12">
                 <div class="luna-analysis-card">
                     <div class="luna-title">
-                        <i class="bi bi-stars"></i> Insights da Luna AI
+                        <i class="bi bi-stars"></i> Luna AI Insights
                     </div>
-                    <div class="luna-text">{{ sugestao if sugestao else "Aguardando mais transações para análise..." }}</div>
+                    <div class="luna-text">{{ sugestao if sugestao else "Luna está analisando seus dados, um momento..." }}</div>
                 </div>
             </div>
         </div>
     </main>
 
     <script>
+        // Configurações Globais do Chart.js
         Chart.defaults.color = '#A0A0A0';
         Chart.defaults.borderColor = '#222';
 
@@ -208,6 +217,7 @@
             }
         };
 
+        // Gráfico de Linha
         new Chart(document.getElementById('line-chart'), {
             type: 'line',
             data: {
@@ -218,12 +228,14 @@
                     borderColor: '#E65100',
                     backgroundColor: 'rgba(230, 81, 0, 0.1)',
                     fill: true,
-                    tension: 0.4
+                    tension: 0.4,
+                    pointRadius: 4
                 }]
             },
             options: opt
         });
 
+        // Gráfico de Gastos
         new Chart(document.getElementById('pizza-chart'), {
             type: 'doughnut',
             data: {
@@ -234,9 +246,10 @@
                     borderWidth: 0
                 }]
             },
-            options: { ...opt, cutout: '70%' }
+            options: { ...opt, cutout: '75%' }
         });
 
+        // Gráfico de Receitas
         new Chart(document.getElementById('receitas-chart'), {
             type: 'doughnut',
             data: {
@@ -247,7 +260,7 @@
                     borderWidth: 0
                 }]
             },
-            options: { ...opt, cutout: '70%' }
+            options: { ...opt, cutout: '75%' }
         });
     </script>
 </body>
