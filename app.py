@@ -1,6 +1,4 @@
 import os
-from itertools import count
-
 from flask import Flask, render_template, session, request, redirect, url_for, jsonify
 from models import autenticacao, cadastrar, buscar_noticias, bolsa, sql
 from google import genai
