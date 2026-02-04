@@ -1,12 +1,12 @@
-import os, smtplib, random
+import os, random
 from flask import Flask, render_template, session, request, redirect, url_for, jsonify
 from werkzeug.security import generate_password_hash
-
 from models import autenticacao, cadastrar, buscar_noticias, bolsa, sql
 from google import genai
 from google.genai import types
-from threading import Thread
 from email.message import EmailMessage
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 app = Flask(__name__)
 app.secret_key = os.getenv("app_secret_key")
@@ -490,13 +490,16 @@ def post_transacao():
             "window.location = '/transacao';"
             "</script>")
 
-def enviar_email(mensagem, remetente, senha_google):
-    try:
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-            smtp.login(remetente, senha_google)
-            smtp.send_message(mensagem)
-    except Exception as e:
-        print("Erro SMTP:", e)
+def enviar_email(mensagem, remetente):
+    sg = SendGridAPIClient(os.getenv("sendgrid_key"))
+    email = Mail(
+        from_email=remetente,
+        to_emails=mensagem["To"],
+        subject=mensagem["Subject"],
+        plain_text_content=mensagem.get_content()
+    )
+    sg.send(email)
+
 
 @app.route("/post_cod", methods=["POST"])
 def post_cod():
@@ -514,18 +517,14 @@ def post_cod():
         session["acao"] = "cadastrar" if nome and senha else "atualizar_senha"
 
         remetente = "andrebezerra19099@gmail.com"
-        senha_google = os.getenv("google_key")
 
         mens = EmailMessage()
         mens["Subject"] = "Seu Código de Verificação - EuGestor"
         mens["From"] = remetente
         mens["To"] = email
         mens.set_content(f"Olá, seu código de verificação é: {codigo}")
+        enviar_email(mens, remetente)
 
-        Thread(
-            target=enviar_email,  # funçao e executada em segundo plano, sem travar o cod
-            args=(mens, remetente, senha_google)
-        ).start()
         return redirect(url_for("ver_email"))
 
     except Exception as e:
