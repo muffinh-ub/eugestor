@@ -514,7 +514,7 @@ def post_cod():
         mens["Subject"] = "Seu Código de Verificação - EuGestor"
         mens["From"] = remetente
         mens["To"] = email
-        mens.set_content(f"Olá {nome}! Seu código de verificação é: {codigo}")
+        mens.set_content(f"Olá, seu código de verificação é: {codigo}")
 
         Thread(
             target=enviar_email,  # funçao e executada em segundo plano, sem travar o cod
