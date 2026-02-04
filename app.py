@@ -261,7 +261,10 @@ def validar_cod():
     codigo_usuario = request.form.get("codigo")
     codigo_real = session.get("codigo_verificacao")
 
-    if codigo_usuario == codigo_real:
+    if codigo_usuario != codigo_real:
+        return "<script>alert('Código inválido!'); window.location='/verificar_email';</script>"
+
+    if session.get("acao") == "cadastrar":
         nome = session.get("temp_nome")
         email = session.get("temp_email")
         senha = session.get("temp_senha")
@@ -269,13 +272,20 @@ def validar_cod():
         if cadastrar(nome, email, senha) > 0:
             session.clear()
             usuario = autenticacao(email, senha)
-            session['usuario'] = usuario
-
+            session["usuario"] = usuario
             return "<script>alert('Cadastro realizado!'); window.location='/home';</script>"
-        else:
-            return "Erro ao cadastrar conta."
+        return "Erro ao cadastrar conta."
+
     else:
-        return "<script>alert('Código inválido!'); window.location='/verificar_email';</script>"
+        email = session.get("temp_email")
+        senha = session.get("temp_senha")
+
+        if atualizar_senha(email, senha) > 0:
+            session.clear()
+            usuario = autenticacao(email, senha)
+            session["usuario"] = usuario
+            return "<script>alert('Senha atualizada!'); window.location='/home';</script>"
+        return "Erro ao atualizar senha."
 
 
 #envia as mensagens a Luna
@@ -471,8 +481,8 @@ def enviar_email(mensagem, remetente, senha_google):
         smtp.send_message(mensagem)
 
 
-@app.route("/post_cadastrar", methods=["POST"])
-def post_cadastrar():
+@app.route("/post_cod", methods=["POST"])
+def post_cod():
     try:
         nome = request.form.get("nome")
         email = request.form.get("email")
@@ -484,6 +494,7 @@ def post_cadastrar():
 
         codigo = random.randint(10000, 99999)
         session["codigo_verificacao"] = codigo
+        session["acao"] = "cadastrar" if not senha or not nome else "atualizar_senha"
 
         remetente = "andrebezerra19099@gmail.com"
         senha_google = os.getenv("google_key")
@@ -507,6 +518,10 @@ def post_cadastrar():
             "window.location = '/cadastro';"
             "</script>")
 
+@app.route("/atualizar_senha")
+def atualizar_senha():
+    return render_template("atualizar_senha.html")
+
 
 @app.route("/post_logar", methods=["POST"])
 def post_logar():
@@ -515,7 +530,7 @@ def post_logar():
 
     usuario = autenticacao(email, senha)
     if usuario:
-        session['usuario'] = usuario
+        session["usuario"] = usuario
         return redirect(url_for("home"))
 
     return ("<script>"

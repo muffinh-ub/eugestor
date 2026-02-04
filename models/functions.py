@@ -48,3 +48,9 @@ def bolsa():
     except Exception as erro:
         print(f"Erro ao obter dados: {erro}")
         return []
+
+def atualizar_senha(email, senha):
+    senha_hash = generate_password_hash(senha)
+    resultado = db.execute("update tbusuario "
+                           "set senha_user = %s where email_user = %s", (senha_hash, senha))
+    return resultado
