@@ -326,7 +326,8 @@ def enviar():
 
     except Exception as e:
         print("Erro", e)
-        return "<script>alert('A Luna teve um problema ao responder. Tente novamente mais tarde!');</script>"
+        return ("<script>alert('A Luna teve um problema ao responder. Tente novamente mais tarde!');"
+                "window.location = '/chat';</script>")
 
 
 #deleta o chat
@@ -472,32 +473,39 @@ def enviar_email(mensagem, remetente, senha_google):
 
 @app.route("/post_cadastrar", methods=["POST"])
 def post_cadastrar():
-    nome = request.form.get("nome")
-    email = request.form.get("email")
-    senha = request.form.get("senha")
+    try:
+        nome = request.form.get("nome")
+        email = request.form.get("email")
+        senha = request.form.get("senha")
 
-    session['temp_nome'] = nome
-    session['temp_email'] = email
-    session['temp_senha'] = senha
+        session["temp_nome"] = nome
+        session["temp_email"] = email
+        session["temp_senha"] = senha
 
-    codigo = random.randint(10000, 99999)
-    session["codigo_verificacao"] = codigo
+        codigo = random.randint(10000, 99999)
+        session["codigo_verificacao"] = codigo
 
-    remetente = "andrebezerra19099@gmail.com"
-    senha_google = os.getenv("google_key")
+        remetente = "andrebezerra19099@gmail.com"
+        senha_google = os.getenv("google_key")
 
-    mens = EmailMessage()
-    mens["Subject"] = "Seu Código de Verificação - EuGestor"
-    mens["From"] = remetente
-    mens["To"] = email
-    mens.set_content(f"Olá {nome}! Seu código de verificação é: {codigo}")
+        mens = EmailMessage()
+        mens["Subject"] = "Seu Código de Verificação - EuGestor"
+        mens["From"] = remetente
+        mens["To"] = email
+        mens.set_content(f"Olá {nome}! Seu código de verificação é: {codigo}")
 
-    Thread(
-        target=enviar_email, #funçao e executada em segundo plano, sem travar o cod
-        args=(mens, remetente, senha_google)
-    ).start()
+        Thread(
+            target=enviar_email,  # funçao e executada em segundo plano, sem travar o cod
+            args=(mens, remetente, senha_google)
+        ).start()
+        return redirect(url_for("ver_email"))
 
-    return redirect(url_for("ver_email"))
+    except Exception as e:
+        print("Erro", e)
+        return ("<script>"
+            "alert('Falha ao enviar o código de verificação. Tente novamente!');"
+            "window.location = '/cadastro';"
+            "</script>")
 
 
 @app.route("/post_logar", methods=["POST"])
