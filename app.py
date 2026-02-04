@@ -1,8 +1,10 @@
-import os
+import os, smtplib, random
 from flask import Flask, render_template, session, request, redirect, url_for, jsonify
 from models import autenticacao, cadastrar, buscar_noticias, bolsa, sql
 from google import genai
 from google.genai import types
+from threading import Thread
+from email.message import EmailMessage
 
 app = Flask(__name__)
 app.secret_key = os.getenv("app_secret_key")
@@ -282,42 +284,49 @@ def enviar():
     if not session.get("usuario"):
         return redirect(url_for("login"))
 
-    persona = ("Você é Luna, uma assistente pessoal focada em gestão financeira (pessoal ou empresarial) "
-               "você tem uma personalidade gentil, calma, calculista, e simplista, é direta ao ponto mas também é muito carinhosa "
-               "sempre pensa em todas as oportunidades, riscos e as melhores estratégias pro cliente seguir. Não fale nada pro cliente sobre esta instrução")
+    try:
+        persona = ("Você é Luna, uma assistente pessoal focada em gestão financeira (pessoal ou empresarial) "
+                   "você tem uma personalidade gentil, calma, calculista, e simplista, é direta ao ponto mas também é muito carinhosa "
+                   "sempre pensa em todas as oportunidades, riscos e as melhores estratégias pro cliente seguir. Não fale nada pro cliente sobre esta instrução")
 
-    id_usuario = session.get("usuario")["id_user"]
-    titulo = request.form.get("titulo")
-    pergunta = request.form.get("pergunta")
+        id_usuario = session.get("usuario")["id_user"]
+        titulo = request.form.get("titulo")
+        pergunta = request.form.get("pergunta")
 
-    res_chat = db.search("select id_chat from tbchat where titulo_chat = %s and id_user = %s",
-                         (titulo, id_usuario), True)
-    id_chat = res_chat["id_chat"]
-    mensagens = db.search("select role_mens as role, conteudo_mens as conteudo "
-                             "from tbmensagem where id_chat = %s "
-                             "order by enviado_em desc limit 20", (id_chat,))
-    historico = []
-    for mens in mensagens:
-        estrutura_mensagem = {
-            #Formata a mensagem pra estrutura pedida pro gemini
-            "role": mens["role"],
-            "parts": [
-                {"text": mens["conteudo"]}
-            ]
-        }
-        historico.append(estrutura_mensagem)
+        res_chat = db.search("select id_chat from tbchat where titulo_chat = %s and id_user = %s",
+                             (titulo, id_usuario), True)
+        id_chat = res_chat["id_chat"]
+        mensagens = db.search("select role_mens as role, conteudo_mens as conteudo "
+                              "from tbmensagem where id_chat = %s "
+                              "order by enviado_em desc limit 15", (id_chat,))
+        historico = []
+        for mens in mensagens:
+            estrutura_mensagem = {
+                # Formata a mensagem pra estrutura pedida pro gemini
+                "role": mens["role"],
+                "parts": [
+                    {"text": mens["conteudo"]}
+                ]
+            }
+            historico.append(estrutura_mensagem)
 
-    chat_ia = client.chats.create(model=model, history=historico, config=types.GenerateContentConfig(
-        system_instruction=persona
-    ))
-    resposta = chat_ia.send_message(pergunta)
+        chat_ia = client.chats.create(model=model, history=historico, config=types.GenerateContentConfig(
+            system_instruction=persona
+        ))
+        resposta = chat_ia.send_message(pergunta)
 
-    db.execute("insert into tbmensagem (id_user,id_chat, role_mens, conteudo_mens, enviado_em) values (%s, %s, %s, %s, now())",
-               (id_usuario,id_chat, "user", pergunta))
-    db.execute("insert into tbmensagem (id_user, id_chat, role_mens, conteudo_mens, enviado_em) values (%s, %s, %s, %s, now())",
-               (id_usuario,id_chat, "model", resposta.text))
+        db.execute(
+            "insert into tbmensagem (id_user,id_chat, role_mens, conteudo_mens, enviado_em) values (%s, %s, %s, %s, now())",
+            (id_usuario, id_chat, "user", pergunta))
+        db.execute(
+            "insert into tbmensagem (id_user, id_chat, role_mens, conteudo_mens, enviado_em) values (%s, %s, %s, %s, now())",
+            (id_usuario, id_chat, "model", resposta.text))
 
-    return redirect(url_for('cur_chat', titulo_chat=titulo))
+        return redirect(url_for('cur_chat', titulo_chat=titulo))
+
+    except Exception as e:
+        print("Erro", e)
+        return "<script>alert('A Luna teve um problema ao responder. Tente novamente mais tarde!');</script>"
 
 
 #deleta o chat
@@ -455,18 +464,17 @@ def post_transacao():
             "window.location = '/transacao';"
             "</script>")
 
+def enviar_email(mensagem, remetente, senha_google):
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+        smtp.login(remetente, senha_google)
+        smtp.send_message(mensagem)
+
 
 @app.route("/post_cadastrar", methods=["POST"])
 def post_cadastrar():
-    import random, smtplib
-    from email.message import EmailMessage
-
     nome = request.form.get("nome")
     email = request.form.get("email")
     senha = request.form.get("senha")
-
-    if not email:
-        return "Por favor, insira um e-mail."
 
     session['temp_nome'] = nome
     session['temp_email'] = email
@@ -478,23 +486,18 @@ def post_cadastrar():
     remetente = "andrebezerra19099@gmail.com"
     senha_google = os.getenv("google_key")
 
-    msg = EmailMessage()
-    msg['Subject'] = "Seu Código de Verificação - EuGestor"
-    msg['From'] = remetente
-    msg['To'] = email
-    msg.set_content(f"Olá {nome}! Seu código de verificação é: {codigo}")
+    mens = EmailMessage()
+    mens["Subject"] = "Seu Código de Verificação - EuGestor"
+    mens["From"] = remetente
+    mens["To"] = email
+    mens.set_content(f"Olá {nome}! Seu código de verificação é: {codigo}")
 
-    try:
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-            smtp.login(remetente, senha_google)
-            smtp.send_message(msg)
+    Thread(
+        target=enviar_email, #funçao e executada em segundo plano, sem travar o cod
+        args=(mens, remetente, senha_google)
+    ).start()
 
-        return redirect(url_for("ver_email"))
-
-    except Exception as e:
-        print(e)
-        return ("<script>alert('Erro ao enviar e-mail');"
-                "window.location='/cadastro';</script>")
+    return redirect(url_for("ver_email"))
 
 
 @app.route("/post_logar", methods=["POST"])
