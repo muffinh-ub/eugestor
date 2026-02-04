@@ -52,5 +52,5 @@ def bolsa():
 def atualizar_senha(email, senha):
     senha_hash = generate_password_hash(senha)
     resultado = db.execute("update tbusuario "
-                           "set senha_user = %s where email_user = %s", (senha_hash, senha))
+                           "set senha_user = %s where email_user = %s", (senha_hash, email))
     return resultado
