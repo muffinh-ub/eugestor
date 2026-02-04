@@ -239,7 +239,7 @@ def dashboard():
                            sugestao=sugestao)
 
 @app.route("/esqueceu_senha")
-def atualizar_senha():
+def esqueceu_senha():
     return render_template("esqueceu_senha.html")
 
 @app.route("/atualizar_senha")
