@@ -1,5 +1,7 @@
 import os, smtplib, random
 from flask import Flask, render_template, session, request, redirect, url_for, jsonify
+from werkzeug.security import generate_password_hash
+
 from models import autenticacao, cadastrar, buscar_noticias, bolsa, sql
 from google import genai
 from google.genai import types
@@ -236,6 +238,10 @@ def dashboard():
                            valores_pizza_receitas=valores_pizza_receitas or [0],
                            sugestao=sugestao)
 
+@app.route("/atualizar_senha")
+def atualizar_senha():
+    return render_template("atualizar_senha.html")
+
 #--- Rotas de processamento ---
 
 
@@ -430,11 +436,16 @@ def post_perfil():
     id_usuario = usuario["id_user"]
     nome = request.form.get("nome") if request.form.get("nome") else usuario.get("nome_user")
     email = request.form.get("email") if request.form.get("email") else usuario.get("email_user")
-    senha = request.form.get("senha") if request.form.get("senha") else usuario.get("senha_user")
+    senha = request.form.get("senha")
+
+    if senha:
+        senha_hash = generate_password_hash(senha)
+    else:
+        senha_hash = usuario.get("senha_user")
 
     resultado = db.execute("update tbusuario set "
                            "nome_user = %s, email_user = %s, senha_user = %s "
-                           "where id_user = %s", (nome, email, senha, id_usuario))
+                           "where id_user = %s", (nome, email, senha_hash, id_usuario))
 
     if resultado > 0:
         session["usuario"] = db.search("select * from tbusuario where id_user = %s", (id_usuario,), True)
@@ -494,7 +505,7 @@ def post_cod():
 
         codigo = random.randint(10000, 99999)
         session["codigo_verificacao"] = codigo
-        session["acao"] = "cadastrar" if not senha or not nome else "atualizar_senha"
+        session["acao"] = "cadastrar" if nome and senha else "atualizar_senha"
 
         remetente = "andrebezerra19099@gmail.com"
         senha_google = os.getenv("google_key")
@@ -518,11 +529,6 @@ def post_cod():
             "window.location = '/cadastro';"
             "</script>")
 
-@app.route("/atualizar_senha")
-def atualizar_senha():
-    return render_template("atualizar_senha.html")
-
-
 @app.route("/post_logar", methods=["POST"])
 def post_logar():
     email = request.form.get("email")
@@ -537,7 +543,6 @@ def post_logar():
             "alert('Falha no login!');"
             "window.location = '/login';"
             "</script>")
-
 
 @app.route("/logout")
 def logout():
