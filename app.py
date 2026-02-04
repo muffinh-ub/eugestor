@@ -238,6 +238,10 @@ def dashboard():
                            valores_pizza_receitas=valores_pizza_receitas or [0],
                            sugestao=sugestao)
 
+@app.route("/esqueceu_senha")
+def atualizar_senha():
+    return render_template("esqueceu_senha.html")
+
 @app.route("/atualizar_senha")
 def atualizar_senha():
     return render_template("atualizar_senha.html")
