@@ -271,7 +271,7 @@ def validar_cod():
     codigo_usuario = request.form.get("codigo")
     codigo_real = session.get("codigo_verificacao")
 
-    if codigo_usuario != codigo_real:
+    if int(codigo_usuario) != codigo_real:
         return "<script>alert('Código inválido!'); window.location='/verificar_email';</script>"
 
     if session.get("acao") == "cadastrar":
@@ -491,10 +491,12 @@ def post_transacao():
             "</script>")
 
 def enviar_email(mensagem, remetente, senha_google):
-    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-        smtp.login(remetente, senha_google)
-        smtp.send_message(mensagem)
-
+    try:
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+            smtp.login(remetente, senha_google)
+            smtp.send_message(mensagem)
+    except Exception as e:
+        print("Erro SMTP:", e)
 
 @app.route("/post_cod", methods=["POST"])
 def post_cod():
