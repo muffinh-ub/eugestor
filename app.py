@@ -244,7 +244,7 @@ def dashboard():
 @app.route("/usuario/<email>")
 def detalhe_usuario(email):
     usuario = db.search("select nome_user as nome, email_user as email, "
-                        "cadastro_user as cadastro, professional_licence as licence, is_admin as adm from tbusuario where email = %s", (email,), one=True)
+                        "cadastro_user as cadastro, professional_licence as licence, is_admin as adm from tbusuario where email_user = %s", (email,), one=True)
     return render_template('usuario.html', usuario=usuario)
 
 @app.route("/esqueceu_senha")
