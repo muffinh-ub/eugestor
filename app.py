@@ -4,7 +4,6 @@ from werkzeug.security import generate_password_hash
 from models import autenticacao, cadastrar, buscar_noticias, bolsa, sql, atualizar_senha
 from google import genai
 from google.genai import types
-from email.message import EmailMessage
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
@@ -223,6 +222,9 @@ def dashboard():
             )
             sugestao = resposta.text
             session["sugestao"] = sugestao
+
+        elif dados == "":
+            sugestao = "Registre ao menos uma transação para usar esta funcionalidade"
         else:
             sugestao = None or session.get("sugestao")
     except Exception as e:
@@ -237,6 +239,13 @@ def dashboard():
                            labels_pizza_receitas=labels_pizza_receitas or ["Sem dados"],
                            valores_pizza_receitas=valores_pizza_receitas or [0],
                            sugestao=sugestao)
+
+
+@app.route("/usuario/<email>")
+def detalhe_usuario(email):
+    usuario = db.search("select nome_user, email_user, "
+                        "cadastro_user, professional_licence, is_admin from tbusuario where email = %s", (email,), one=True)
+    return render_template('usuario.html', usuario=usuario)
 
 @app.route("/esqueceu_senha")
 def esqueceu_senha():

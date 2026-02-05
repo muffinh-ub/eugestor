@@ -204,7 +204,7 @@
             <div class="col-md-4">
                 <div class="stat-box">
                     <span class="text-muted small fw-bold text-uppercase">Total Usuários</span>
-                    <h2 class="fw-bold mb-0">Total: {{ total_usuarios }}</h2>
+                    <h2 class="fw-bold mb-0">{{ total_usuarios }}</h2>
                 </div>
             </div>
         </div>
@@ -225,8 +225,10 @@
                         {% for u in usuarios %}
                         <tr>
                             <td>
+                                <a href="/usuario/{{ u.email_user }}" class="text-decoration-none text-white">
                                 <div class="fw-bold">{{ u.nome_user }}</div>
                                 <div class="d-block d-md-none text-muted small">{{ u.email_user }}</div>
+                                </a>
                             </td>
                             <td class="hide-mobile text-muted">{{ u.email_user }}</td>
                             <td>
@@ -242,7 +244,7 @@
                                         <i class="bi bi-arrow-up-short"></i> <span class="hide-mobile">Promover</span>
                                     </button>
                                 {% else %}
-                                    <i class="bi bi-check-circle-fill text-success ms-2"></i>
+                                    <p>Sem ações</p>
                                 {% endif %}
                             </td>
                         </tr>
