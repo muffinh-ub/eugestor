@@ -482,15 +482,38 @@ def post_transacao():
             "window.location = '/transacao';"
             "</script>")
 
-def enviar_email(mensagem, remetente):
-    sg = SendGridAPIClient(os.getenv("sendgrid_key"))
-    email = Mail(
-        from_email=remetente,
-        to_emails=mensagem["To"],
-        subject=mensagem["Subject"],
-        plain_text_content=mensagem.get_content()
-    )
-    sg.send(email)
+
+def enviar_email(assunto, destinatario, codigo):
+    try:
+        meu_nome = "Suporte EuGestor"
+        meu_email = "andrebezerra19099@gmail.com"
+
+        sg = SendGridAPIClient(os.getenv("sendgrid_key"))
+        remetente = f"{meu_nome} <{meu_email}>"
+
+        conteudo_html = f"""
+        <div style="font-family: sans-serif; border: 1px solid #eee; padding: 20px; border-radius: 10px;">
+            <h2 style="color: #333;">Olá!</h2>
+            <p>Seu código de verificação para o <strong>EuGestor</strong> é:</p>
+            <div style="background: #f4f4f4; padding: 10px; font-size: 24px; font-weight: bold; text-align: center; letter-spacing: 5px;">
+                {codigo}
+            </div>
+            <p style="font-size: 12px; color: #777; margin-top: 20px;">
+                Este é um e-mail automático. Não responda.
+            </p>
+        </div>
+        """
+
+        email = Mail(
+            from_email=remetente,
+            to_emails=destinatario,
+            subject=assunto,
+            html_content=conteudo_html
+        )
+        sg.send(email)
+
+    except Exception as e:
+        print(f"Erro no SendGrid: {e}")
 
 
 @app.route("/post_cod", methods=["POST"])
@@ -509,13 +532,7 @@ def post_cod():
         session["acao"] = "cadastrar" if nome and senha else "atualizar_senha"
 
         remetente = "andrebezerra19099@gmail.com"
-
-        mens = EmailMessage()
-        mens["Subject"] = "Seu Código de Verificação - EuGestor"
-        mens["From"] = remetente
-        mens["To"] = email
-        mens.set_content(f"Olá, seu código de verificação é: {codigo}")
-        enviar_email(mens, remetente)
+        enviar_email("Código de verificação", email, codigo)
 
         return redirect(url_for("ver_email"))
 
