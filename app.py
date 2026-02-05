@@ -530,7 +530,7 @@ def post_cod():
                           (email,))):
             return ("<script>"
                     "alert('Este email já está sendo usado, use outro!');"
-                    "window.location = '/';</script>")
+                    "window.location = '/cadastro';</script>")
 
         session["temp_nome"] = nome
         session["temp_email"] = email
