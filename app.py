@@ -287,15 +287,7 @@ def validar_cod():
         return "Erro ao cadastrar conta."
 
     else:
-        email = session.get("temp_email")
-        senha = session.get("temp_senha")
-
-        if atualizar_senha(email, senha) > 0:
-            session.clear()
-            usuario = autenticacao(email, senha)
-            session["usuario"] = usuario
-            return "<script>alert('Senha atualizada!'); window.location='/home';</script>"
-        return "Erro ao atualizar senha."
+        return redirect(url_for("atualizar_senha_html"))
 
 
 #envia as mensagens a Luna
@@ -533,6 +525,23 @@ def post_cod():
             "alert('Falha ao enviar o código de verificação. Tente novamente!');"
             "window.location = '/cadastro';"
             "</script>")
+
+
+@app.route("/post_nova_senha", methods=["POST"])
+def post_nova_senha():
+    email = session.get("temp_email")
+    nova_senha = request.form.get("senha")
+
+    if not email or not nova_senha:
+        return "<script>alert('Sessão expirada. Comece o processo novamente.'); window.location='/esqueceu_senha';</script>"
+
+    if atualizar_senha(email, nova_senha) > 0:
+        usuario = autenticacao(email, nova_senha)
+        session.clear()
+        session["usuario"] = usuario
+        return "<script>alert('Senha atualizada com sucesso!'); window.location='/home';</script>"
+
+    return "<script>alert('Erro ao atualizar senha.'); window.location='/atualizar_senha';</script>"
 
 @app.route("/post_logar", methods=["POST"])
 def post_logar():
