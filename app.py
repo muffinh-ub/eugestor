@@ -510,6 +510,7 @@ def enviar_email(assunto, destinatario, codigo):
             subject=assunto,
             html_content=conteudo_html
         )
+        email.reply_to = remetente
         sg.send(email)
 
     except Exception as e:
@@ -531,7 +532,6 @@ def post_cod():
         session["codigo_verificacao"] = codigo
         session["acao"] = "cadastrar" if nome and senha else "atualizar_senha"
 
-        remetente = "andrebezerra19099@gmail.com"
         enviar_email("Código de verificação", email, codigo)
 
         return redirect(url_for("ver_email"))
