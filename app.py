@@ -1,7 +1,7 @@
 import os, random
 from flask import Flask, render_template, session, request, redirect, url_for, jsonify
 from werkzeug.security import generate_password_hash
-from models import autenticacao, cadastrar, buscar_noticias, bolsa, sql
+from models import autenticacao, cadastrar, buscar_noticias, bolsa, sql, atualizar_senha
 from google import genai
 from google.genai import types
 from email.message import EmailMessage
@@ -243,7 +243,7 @@ def esqueceu_senha():
     return render_template("esqueceu_senha.html")
 
 @app.route("/atualizar_senha")
-def atualizar_senha():
+def atualizar_senha_html():
     return render_template("atualizar_senha.html")
 
 #--- Rotas de processamento ---
