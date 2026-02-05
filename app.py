@@ -524,13 +524,20 @@ def post_cod():
         email = request.form.get("email")
         senha = request.form.get("senha")
 
+        session["acao"] = "cadastrar" if nome and senha else "atualizar_senha"
+        if (session.get("acao") == "cadastrar" and
+                db.search("select * from tbusuario where email_user = %s",
+                          (email,))):
+            return ("<script>"
+                    "alert('Este email já está sendo usado, use outro!');"
+                    "window.location = '/';</script>")
+
         session["temp_nome"] = nome
         session["temp_email"] = email
         session["temp_senha"] = senha
 
         codigo = random.randint(10000, 99999)
         session["codigo_verificacao"] = codigo
-        session["acao"] = "cadastrar" if nome and senha else "atualizar_senha"
 
         enviar_email("Código de verificação", email, codigo)
 
