@@ -66,7 +66,7 @@ def cadastro():
 def ver_email():
     if "codigo_verificacao" not in session:
         return redirect(url_for("cadastro"))
-    return render_template("verificar_email.html")
+    return render_template("validar_email.html")
 
 
 @app.route("/b3")
