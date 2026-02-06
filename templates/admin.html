@@ -155,6 +155,34 @@
             border-radius: 4px;
             font-size: 0.8rem;
             font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-adm:hover {
+            background: #ff6d00;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(230, 81, 0, 0.4);
+        }
+
+        .btn-adm:active {
+            transform: translateY(0) scale(0.95);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-adm:hover i {
+            animation: bounceUp 0.5s infinite alternate;
+        }
+
+        @keyframes bounceUp {
+            from {
+                transform: translateY(0);
+            }
+            to {
+                transform: translateY(-3px);
+            }
         }
 
         /* Responsividade */

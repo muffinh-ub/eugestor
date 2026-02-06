@@ -116,6 +116,10 @@
             transition: all 0.2s;
         }
 
+        .bg_ {
+            background-color: var(--primary-orange);
+        }
+
         .back-button:hover { color: white; transform: translateX(-5px); }
 
         @media (max-width: 768px) {
@@ -156,7 +160,7 @@
                         <p class="text-light mb-0"><i class="bi bi-envelope me-2"></i>{{ usuario['email'] }}</p>
                     </div>
                     <div class="col-md-auto">
-                        <span class="badge {{ 'bg-warning text-dark' if usuario['adm'] else 'bg-primary' }}">
+                        <span class="badge {{ '.bg_ text-light' if usuario['adm'] else 'bg-primary' }}">
                             {{ 'ADMIN' if usuario['adm'] else 'CLIENTE' }}
                         </span>
                     </div>
