@@ -57,9 +57,7 @@
             transition: color 0.3s;
         }
 
-        .eugestor-link:hover {
-            color: white;
-        }
+        .eugestor-link:hover { color: white; }
 
         .nav-link {
             color: var(--text-muted);
@@ -106,7 +104,7 @@
         .stock-card:hover {
             transform: translateY(-5px);
             border-color: var(--primary-orange);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
 
         .logo {
@@ -151,104 +149,77 @@
             gap: 5px;
         }
 
-        .pos {
-            color: var(--success-green);
-            background: rgba(46, 204, 113, 0.1);
-        }
-
-        .neg {
-            color: var(--danger-red);
-            background: rgba(231, 76, 60, 0.1);
-        }
-
-        .neutral {
-            color: var(--text-muted);
-            background: rgba(160, 160, 160, 0.1);
-        }
+        .pos { color: var(--success-green); background: rgba(46, 204, 113, 0.1); }
+        .neg { color: var(--danger-red); background: rgba(231, 76, 60, 0.1); }
+        .neutral { color: var(--text-muted); background: rgba(160, 160, 160, 0.1); }
 
         /* Responsividade Mobile */
         @media (max-width: 768px) {
-            .sidebar {
-                width: 70px;
-            }
-
-            .sidebar-header, .nav-link span {
-                display: none;
-            }
-
-            .main-content {
-                margin-left: 70px;
-                padding: 1.2rem;
-            }
-
-            .nav-link {
-                justify-content: center;
-                padding: 20px 0;
-                border-left: none;
-            }
+            .sidebar { width: 70px; }
+            .sidebar-header, .nav-link span { display: none; }
+            .main-content { margin-left: 70px; padding: 1.2rem; }
+            .nav-link { justify-content: center; padding: 20px 0; border-left: none; }
         }
     </style>
 </head>
 <body>
 
-<aside class="sidebar">
-    <div class="sidebar-header">
-        <a href="/home" class="eugestor-link">EuGestor</a>
-    </div>
-    <nav class="flex-column">
-        <a href="/home" class="nav-link">
-            <i class="bi bi-house-door"></i> <span>Home</span>
-        </a>
-        <a href="/b3" class="nav-link active">
-            <i class="bi bi-graph-up-arrow"></i> <span>Bolsa (B3)</span>
-        </a>
-        <hr class="mx-3" style="border-color: #333;">
-        <a href="/logout" class="nav-link text-danger">
-            <i class="bi bi-box-arrow-right"></i> <span>Sair</span>
-        </a>
-    </nav>
-</aside>
-
-<main class="main-content">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="fw-bold h3 mb-1">Mercado Financeiro</h1>
-            <p class="text-secondary small mb-0">Cotações atualizadas da B3.</p>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="/home" class="eugestor-link">EuGestor</a>
         </div>
-        <span class="badge bg-dark border border-secondary text-secondary p-2">
+        <nav class="flex-column">
+            <a href="/home" class="nav-link">
+                <i class="bi bi-house-door"></i> <span>Home</span>
+            </a>
+            <a href="/b3" class="nav-link active">
+                <i class="bi bi-graph-up-arrow"></i> <span>Bolsa (B3)</span>
+            </a>
+            <hr class="mx-3" style="border-color: #333;">
+            <a href="/logout" class="nav-link text-danger">
+                <i class="bi bi-box-arrow-right"></i> <span>Sair</span>
+            </a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="fw-bold h3 mb-1">Mercado Financeiro</h1>
+                <p class="text-secondary small mb-0">Cotações atualizadas da B3.</p>
+            </div>
+            <span class="badge bg-dark border border-secondary text-secondary p-2">
                 <i class="bi bi-clock-history me-2"></i>Live
             </span>
-    </div>
+        </div>
 
-    <div class="market-grid">
-        {% if b3 %}
-            {% for acao in b3 %}
-                {% set variacao = acao.change if acao.change is not none else 0 %}
-                {% set preco = acao.close if acao.close is not none else 0 %}
+        <div class="market-grid">
+            {% if b3 %}
+                {% for acao in b3 %}
+                    {% set variacao = acao.change if acao.change is not none else 0 %}
+                    {% set preco = acao.close if acao.close is not none else 0 %}
 
-                <div class="stock-card">
-                    <img src="https://s3-sa-east-1.amazonaws.com/bsi.com.br/logos/symbols/{{ acao.stock }}.png"
-                         alt="{{ acao.stock }}"
-                         class="logo">
-                    <span class="symbol">{{ acao.stock }}</span>
-                    <div class="name" title="{{ acao.name }}">{{ acao.name }}</div>
-                    <div class="price">R$ {{ "%.2f"|format(preco) }}</div>
+                    <div class="stock-card">
+                        <img src="{{ acao.logo }}" alt="Logo" class="logo">
+                        <span class="symbol">{{ acao.stock }}</span>
+                        <div class="name" title="{{ acao.name }}">{{ acao.name }}</div>
+                        <div class="price">R$ {{ "%.2f"|format(preco) }}</div>
 
-                    <div class="variation-badge {% if variacao > 0 %}pos{% elif variacao < 0 %}neg{% else %}neutral{% endif %}">
-                        <i class="bi {{ 'bi-caret-up-fill' if variacao > 0 else ('bi-caret-down-fill' if variacao < 0 else 'bi-dash') }}"></i>
-                        {{ "%.2f"|format(variacao) }}%
+                        <div class="variation-badge {% if variacao > 0 %}pos{% elif variacao < 0 %}neg{% else %}neutral{% endif %}">
+                            <i class="bi {{ 'bi-caret-up-fill' if variacao > 0 else ('bi-caret-down-fill' if variacao < 0 else 'bi-dash') }}"></i>
+                            {{ "%.2f"|format(variacao) }}%
+                        </div>
                     </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-5 w-100" style="grid-column: 1 / -1;">
+                    <i class="bi bi-cloud-slash fs-1 text-secondary"></i>
+                    <p class="text-secondary mt-3">Nenhum dado disponível no momento.</p>
                 </div>
-            {% endfor %}
-        {% else %}
-            <div class="text-center py-5 w-100" style="grid-column: 1 / -1;">
-                <i class="bi bi-cloud-slash fs-1 text-secondary"></i>
-                <p class="text-secondary mt-3">Nenhum dado disponível no momento.</p>
-            </div>
-        {% endif %}
-    </div>
-</main>
+            {% endif %}
+        </div>
+    </main>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
