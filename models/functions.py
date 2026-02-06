@@ -40,6 +40,7 @@ def bolsa():
     try:
         client = Brapi(api_key=os.getenv("brapi_token"))
         result = client.quote.list(limit=100, sort_by="change", sort_order="desc")
+        print(result.stocks)
         return result.stocks
 
     except Exception as erro:
