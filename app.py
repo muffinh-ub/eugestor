@@ -252,10 +252,10 @@ def dashboard():
 
 @app.route("/usuario/<email>")
 def detalhe_usuario(email):
-    if not session.get("usuario")["is_admin"]:
-        redirect(url_for("home"))
-    elif not session.get("usuario"):
-        redirect(url_for("login"))
+    usuario_sessao = session.get("usuario")
+
+    if not usuario_sessao or not usuario_sessao.get("is_admin"):
+        return redirect(url_for("home"))
 
     usuario = db.search("select id_user as id, nome_user as nome, email_user as email, "
                         "cadastro_user::date as cadastro, professional_licence as licence, is_admin as adm from tbusuario where email_user = %s",

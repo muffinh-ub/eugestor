@@ -43,7 +43,13 @@ def bolsa():
 
         resposta = requests.get(url)
         dados = resposta.json()
-        return dados.get("stocks", []) #pega as acoes
+        stocks = dados.get("stocks", [])
+
+        for acao in stocks:
+            ticker = acao.get("stock")
+            acao["logo"] = f"https://s3-sa-east-1.amazonaws.com/bsm-logos/logos/{ticker}.png"
+
+        return stocks
 
     except Exception as erro:
         print(f"Erro ao obter dados: {erro}")
