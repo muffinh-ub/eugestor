@@ -141,75 +141,94 @@
         }
 
         @media (max-width: 768px) {
-            .sidebar { width: 70px; }
-            .sidebar-header, .nav-link span { display: none; }
-            .main-content { margin-left: 70px; }
+            .sidebar {
+                width: 70px;
+            }
+
+            .nav-link span {
+                display: none;
+            }
+
+            .nav-link {
+                justify-content: center;
+                padding: 15px 0;
+            }
+
+            .main-content {
+                margin-left: 70px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <a href="/atualizacoes" class="eugestor-link">EuGestor</a>
-        </div>
-        <nav class="flex-column">
-            <a href="/home" class="nav-link active">
-                <i class="bi bi-house-door"></i> <span>Home</span>
-            </a>
+<aside class="sidebar">
+    <div class="sidebar-header d-none d-md-block">
+        <a href="/atualizacoes" class="eugestor-link">EuGestor</a>
+    </div>
 
-            {% if session["usuario"]["is_admin"] %}
+    <div class="d-block d-md-none">
+        <a href="/atualizacoes" class="nav-link" style="color: var(--primary-orange);">
+            <i class="bi bi-envelope-paper"></i>
+        </a>
+    </div>
+    <nav class="flex-column">
+        <a href="/home" class="nav-link active">
+            <i class="bi bi-house-door"></i> <span>Home</span>
+        </a>
+
+        {% if session["usuario"]["is_admin"] %}
             <a href="/adm" class="nav-link">
                 <i class="bi bi-shield-lock"></i> <span>Administrador</span>
             </a>
-            {% endif %}
+        {% endif %}
 
-            <a href="/chat" class="nav-link">
-                <i class="bi bi-chat-dots"></i> <span>Chat Luna</span>
-            </a>
-            <a href="/transacao" class="nav-link">
-                <i class="bi bi-plus-circle"></i> <span>Nova Transação</span>
-            </a>
-            <a href="/extrato" class="nav-link">
-                <i class="bi bi-list-columns"></i> <span>Extrato</span>
-            </a>
-            <a href="/b3" class="nav-link">
-                <i class="bi bi-graph-up-arrow"></i> <span>B3 (Bolsa)</span>
-            </a>
-            <a href="/dashboard" class="nav-link">
-                <i class="bi bi-clipboard2-data"></i> <span>Dashboard</span>
-            </a>
-            <hr style="border-color: #333;">
-            <a href="/perfil" class="nav-link">
-                <i class="bi bi-person"></i> <span>Perfil</span>
-            </a>
-            <a href="/pro" class="nav-link">
-                <i class="bi bi-rocket-takeoff"></i> <span>Pro</span>
-            </a>
-            <a href="/logout" class="nav-link text-danger">
-                <i class="bi bi-box-arrow-right"></i> <span>Sair</span>
-            </a>
-        </nav>
-    </aside>
+        <a href="/chat" class="nav-link">
+            <i class="bi bi-chat-dots"></i> <span>Chat Luna</span>
+        </a>
+        <a href="/transacao" class="nav-link">
+            <i class="bi bi-plus-circle"></i> <span>Nova Transação</span>
+        </a>
+        <a href="/extrato" class="nav-link">
+            <i class="bi bi-list-columns"></i> <span>Extrato</span>
+        </a>
+        <a href="/b3" class="nav-link">
+            <i class="bi bi-graph-up-arrow"></i> <span>B3 (Bolsa)</span>
+        </a>
+        <a href="/dashboard" class="nav-link">
+            <i class="bi bi-clipboard2-data"></i> <span>Dashboard</span>
+        </a>
+        <hr style="border-color: #333;">
+        <a href="/perfil" class="nav-link">
+            <i class="bi bi-person"></i> <span>Perfil</span>
+        </a>
+        <a href="/pro" class="nav-link">
+            <i class="bi bi-rocket-takeoff"></i> <span>Pro</span>
+        </a>
+        <a href="/logout" class="nav-link text-danger">
+            <i class="bi bi-box-arrow-right"></i> <span>Sair</span>
+        </a>
+    </nav>
+</aside>
 
-    <main class="main-content">
-        <header class="welcome-header d-flex align-items-center">
-            <div>
-                <h1>Olá, {{ session["usuario"]["nome_user"] }}
-                    {% if session["usuario"]["is_admin"] %}
-                        <span class="admin-badge">Admin</span>
-                    {% endif %}
-                </h1>
-                <p class="text-secondary">Aqui está o que está acontecendo no mercado financeiro hoje.</p>
-            </div>
-        </header>
+<main class="main-content">
+    <header class="welcome-header d-flex align-items-center">
+        <div>
+            <h1>Olá, {{ session["usuario"]["nome_user"] }}
+                {% if session["usuario"]["is_admin"] %}
+                    <span class="admin-badge">Admin</span>
+                {% endif %}
+            </h1>
+            <p class="text-secondary">Aqui está o que está acontecendo no mercado financeiro hoje.</p>
+        </div>
+    </header>
 
-        <section id="noticias">
-            <h5 class="mb-4 fw-bold"><i class="bi bi-lightning-fill text-warning me-2"></i>Últimas Notícias</h5>
+    <section id="noticias">
+        <h5 class="mb-4 fw-bold"><i class="bi bi-lightning-fill text-warning me-2"></i>Últimas Notícias</h5>
 
-            {% if noticias %}
-                <div class="row">
-                    {% for n in noticias %}
+        {% if noticias %}
+            <div class="row">
+                {% for n in noticias %}
                     <div class="col-12">
                         <div class="news-card">
                             <h3 class="news-title h5">{{ n.title }}</h3>
@@ -219,21 +238,21 @@
                             </a>
                         </div>
                     </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="text-center p-5 border border-dashed border-secondary rounded">
-                    <i class="bi bi-search fs-1 text-secondary"></i>
-                    <p class="mt-3 text-secondary">Nenhuma notícia encontrada no momento.</p>
-                </div>
-            {% endif %}
-        </section>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center p-5 border border-dashed border-secondary rounded">
+                <i class="bi bi-search fs-1 text-secondary"></i>
+                <p class="mt-3 text-secondary">Nenhuma notícia encontrada no momento.</p>
+            </div>
+        {% endif %}
+    </section>
 
-        <footer class="mt-5 text-center text-muted small">
-            <p>&copy; 2026 JetMoney Consultoria.</p>
-        </footer>
-    </main>
+    <footer class="mt-5 text-center text-muted small">
+        <p>&copy; 2026 JetMoney Consultoria.</p>
+    </footer>
+</main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
