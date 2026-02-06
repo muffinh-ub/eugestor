@@ -31,6 +31,7 @@ def home():
     noticias_mercado = buscar_noticias(5)
     return render_template("home.html", noticias=noticias_mercado)
 
+
 @app.route("/pro")
 def pro():
     if not session.get("usuario"):
@@ -55,6 +56,7 @@ def postar_atualizacao():
         redirect(url_for("login"))
 
     return render_template("postar_atualizacao.html")
+
 
 @app.route("/login")
 def login():
@@ -81,7 +83,7 @@ def b3():
     return render_template("b3.html", b3=dados_b3)
 
 
-#carrega todos os chats para o usuario selecionar
+# carrega todos os chats para o usuario selecionar
 @app.route("/chat")
 def chat():
     if not session.get("usuario"):
@@ -91,13 +93,14 @@ def chat():
     return render_template("chat.html", chats=chats)
 
 
-#carrega o chat que o usuario selecionou
+# carrega o chat que o usuario selecionou
 @app.route("/chat/<titulo_chat>")
 def cur_chat(titulo_chat):
     if not session.get("usuario"):
         return redirect(url_for("login"))
     id_usuario = session.get("usuario")["id_user"]
-    id_chat = db.search("select id_chat from tbchat where id_user = %s and titulo_chat = %s", (id_usuario,titulo_chat), True)
+    id_chat = db.search("select id_chat from tbchat where id_user = %s and titulo_chat = %s", (id_usuario, titulo_chat),
+                        True)
     mensagens_chat = db.search("select role_mens as role, conteudo_mens as conteudo "
                                "from tbmensagem where id_chat = %s "
                                "order by enviado_em", (id_chat["id_chat"],))
@@ -118,7 +121,8 @@ def transacao():
         return redirect(url_for("login"))
     return render_template("transacao.html")
 
-@app.route("/extrato", methods=["GET","POST"])
+
+@app.route("/extrato", methods=["GET", "POST"])
 def extrato():
     if not session.get("usuario"):
         return redirect(url_for("login"))
@@ -138,9 +142,9 @@ def extrato():
     transacoes = db.search("select data_transacao::timestamp ,descricao_transacao, categoria_transacao, "
                            "forma_pagamento_transacao, valor_transacao "
                            "from tbtransacao where id_user = %s "
-                          f"{condicao_valor} and data_transacao::date = %s "
-                          "order by data_transacao desc", #str sql
-                           (id_usuario, data)) #parametros
+                           f"{condicao_valor} and data_transacao::date = %s "
+                           "order by data_transacao desc",  # str sql
+                           (id_usuario, data))  # parametros
 
     return render_template("extrato.html", transacoes=transacoes, filtro_sel=filtro, data_sel=data)
 
@@ -159,7 +163,7 @@ def adm():
         return redirect(url_for("home"))
 
     # Estatisticas simples
-    total_usuarios = db.search("select count(*) as total from tbusuario",None, True)
+    total_usuarios = db.search("select count(*) as total from tbusuario", None, True)
 
     # Lista todos os usuários
     usuarios = db.search(
@@ -183,28 +187,28 @@ def dashboard():
 
     id_usuario = session.get("usuario")["id_user"]
     despesas = db.search(("select sum(abs(valor_transacao)) as valor_gasto, categoria_transacao as categoria "
-                    "from tbtransacao where id_user = %s and valor_transacao < 0 "
-                    "group by categoria order by valor_gasto desc;"), (id_usuario,))
+                          "from tbtransacao where id_user = %s and valor_transacao < 0 "
+                          "group by categoria order by valor_gasto desc;"), (id_usuario,))
 
     labels_pizza = [str(r["categoria"]) for r in despesas]
     valores_pizza = [float(r["valor_gasto"]) for r in despesas]
 
     receitas = db.search(("select sum(valor_transacao) as valor_recebido, categoria_transacao as categoria "
-                    "from tbtransacao where id_user = %s and valor_transacao > 0 "
-                    "group by categoria order by valor_recebido desc;"), (id_usuario,))
+                          "from tbtransacao where id_user = %s and valor_transacao > 0 "
+                          "group by categoria order by valor_recebido desc;"), (id_usuario,))
 
-    labels_pizza_receitas = [str(r["categoria"])  for r in receitas]
+    labels_pizza_receitas = [str(r["categoria"]) for r in receitas]
     valores_pizza_receitas = [float(r["valor_recebido"]) for r in receitas]
 
     saldo = db.search(("select date(data_transacao) as data, "
-                   "sum(sum(valor_transacao)) over (order by date(data_transacao)) as saldo_acumulado "
-                   "from tbtransacao where id_user = %s "
-                   "group by data order by data;"), (id_usuario,))
+                       "sum(sum(valor_transacao)) over (order by date(data_transacao)) as saldo_acumulado "
+                       "from tbtransacao where id_user = %s "
+                       "group by data order by data;"), (id_usuario,))
 
     labels_linha = [str(r["data"]) for r in saldo]
     valores_linha = [float(r["saldo_acumulado"]) for r in saldo]
 
-    #Luna
+    # Luna
     try:
         transacoes = db.search(
             "select date(data_transacao) as data, descricao_transacao, categoria_transacao, valor_transacao "
@@ -254,18 +258,22 @@ def detalhe_usuario(email):
         redirect(url_for("login"))
 
     usuario = db.search("select nome_user as nome, email_user as email, "
-                        "cadastro_user as cadastro, professional_licence as licence, is_admin as adm from tbusuario where email_user = %s", (email,), one=True)
+                        "cadastro_user as cadastro, professional_licence as licence, is_admin as adm from tbusuario where email_user = %s",
+                        (email,), one=True)
     return render_template('usuario.html', usuario=usuario)
+
 
 @app.route("/esqueceu_senha")
 def esqueceu_senha():
     return render_template("esqueceu_senha.html")
 
+
 @app.route("/atualizar_senha")
 def atualizar_senha_html():
     return render_template("atualizar_senha.html")
 
-#--- Rotas de processamento ---
+
+# --- Rotas de processamento ---
 
 
 @app.route("/post_postar_atualizacao", methods=["POST"])
@@ -279,11 +287,13 @@ def post_postar_atualizacao():
     titulo = request.form.get("titulo")
     descricao = request.form.get("descricao")
 
-    db.execute("insert into tbatualizacao (id_user, versao_atualizacao, palavra_chave_atualizacao, titulo_atualizacao, descricao_atualizacao) "
-               "values (%s, %s, %s, %s, %s)", (id_admin,versao, palavra_chave, titulo, descricao))
+    db.execute(
+        "insert into tbatualizacao (id_user, versao_atualizacao, palavra_chave_atualizacao, titulo_atualizacao, descricao_atualizacao) "
+        "values (%s, %s, %s, %s, %s)", (id_admin, versao, palavra_chave, titulo, descricao))
 
     return ("<script>alert('Atualização lançada com sucesso!');"
             "window.location = '/postar_atualizacao';</script>")
+
 
 @app.route("/validar_cod", methods=["POST"])
 def validar_cod():
@@ -309,7 +319,7 @@ def validar_cod():
         return redirect(url_for("atualizar_senha_html"))
 
 
-#envia as mensagens a Luna
+# envia as mensagens a Luna
 @app.route("/enviar", methods=["POST"])
 def enviar():
     if not session.get("usuario"):
@@ -361,7 +371,7 @@ def enviar():
                 "window.location = '/chat';</script>")
 
 
-#deleta o chat
+# deleta o chat
 @app.route("/deletar_chat", methods=["POST"])
 def deletar_chat():
     if not session.get("usuario"):
@@ -369,7 +379,8 @@ def deletar_chat():
     id_usuario = session.get("usuario")["id_user"]
     id_chat = db.search("select id_chat from tbchat where id_user = %s ", (id_usuario,), True)["id_chat"]
     titulo = request.json.get("titulo")
-    resultado = db.execute("delete from tbchat where id_chat = %s and id_user = %s and titulo_chat = %s", (id_chat,id_usuario,titulo))
+    resultado = db.execute("delete from tbchat where id_chat = %s and id_user = %s and titulo_chat = %s",
+                           (id_chat, id_usuario, titulo))
 
     if resultado > 0:
         return jsonify({"status": "success", "url": f"/chat/{id_usuario}"})
@@ -377,7 +388,8 @@ def deletar_chat():
     return (f"f<script>alert('Falha ao excluir chat {titulo}');"
             "window.location = '/chat';</script>")
 
-#renomeia o chat
+
+# renomeia o chat
 @app.route("/atualizar_chat", methods=["POST"])
 def atualizar_chat():
     if not session.get("usuario"):
@@ -386,7 +398,8 @@ def atualizar_chat():
     id_usuario = session.get("usuario")["id_user"]
     id_chat = db.search("select id_chat from tbchat where id_user = %s ", (id_usuario,), True)["id_chat"]
     novo_titulo = request.json.get("novo_titulo")
-    resultado = db.execute("update tbchat set titulo_chat = %s where id_chat = %s and id_user = %s", (novo_titulo,id_chat, id_usuario))
+    resultado = db.execute("update tbchat set titulo_chat = %s where id_chat = %s and id_user = %s",
+                           (novo_titulo, id_chat, id_usuario))
 
     if resultado > 0:
         return jsonify({"status": "success", "url": f"/chat/{id_usuario}"})
@@ -395,7 +408,7 @@ def atualizar_chat():
             "window.location = '/chat'</script>")
 
 
-#cria um novo chat
+# cria um novo chat
 @app.route("/novo_chat", methods=["POST"])
 def novo_chat():
     if not session.get("usuario"):
@@ -407,13 +420,14 @@ def novo_chat():
         titulo_recebido = "Nova Conversa"
 
     resultado = db.execute("insert into tbchat (id_user, titulo_chat, criado_em) values (%s, %s, now())",
-               (id_usuario, titulo_recebido))
+                           (id_usuario, titulo_recebido))
 
     if resultado > 0:
         return jsonify({"status": "success", "url": f"/chat/{titulo_recebido}"})
 
     return ("<script>alert('Falha ao criar novo chat');"
             "window.location = '/chat'</script>")
+
 
 @app.route("/promover_admin/<int:id_alvo>")
 def promover_admin(id_alvo):
@@ -445,6 +459,7 @@ def deletar_conta():
         return ("<script>alert('Falha na exclusão da conta!');"
                 "window.location = '/perfil';</script>")
 
+
 @app.route("/post_perfil", methods=["POST"])
 def post_perfil():
     usuario = session.get("usuario")
@@ -468,7 +483,8 @@ def post_perfil():
                 "window.location = '/perfil'</script>")
 
     return ("<script>alert('Falha ao salvar alterações'); "
-                "window.location = '/perfil'</script>")
+            "window.location = '/perfil'</script>")
+
 
 @app.route("/post_transacao", methods=["POST"])
 def post_transacao():
@@ -492,14 +508,14 @@ def post_transacao():
 
     if resultado > 0:
         return ("<script>"
-            "alert('Transação salva com sucesso!');"
-            "window.location = '/transacao';"
-            "</script>")
+                "alert('Transação salva com sucesso!');"
+                "window.location = '/transacao';"
+                "</script>")
     else:
         return ("<script>"
-            "alert('Falha ao salvar transação, tente novamente!');"
-            "window.location = '/transacao';"
-            "</script>")
+                "alert('Falha ao salvar transação, tente novamente!');"
+                "window.location = '/transacao';"
+                "</script>")
 
 
 def enviar_email(assunto, destinatario, codigo):
@@ -565,9 +581,9 @@ def post_cod():
     except Exception as e:
         print("Erro", e)
         return ("<script>"
-            "alert('Falha ao enviar o código de verificação. Tente novamente!');"
-            "window.location = '/cadastro';"
-            "</script>")
+                "alert('Falha ao enviar o código de verificação. Tente novamente!');"
+                "window.location = '/cadastro';"
+                "</script>")
 
 
 @app.route("/post_nova_senha", methods=["POST"])
@@ -586,6 +602,7 @@ def post_nova_senha():
 
     return "<script>alert('Erro ao atualizar senha.'); window.location='/atualizar_senha';</script>"
 
+
 @app.route("/post_logar", methods=["POST"])
 def post_logar():
     email = request.form.get("email")
@@ -601,10 +618,12 @@ def post_logar():
             "window.location = '/login';"
             "</script>")
 
+
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect(url_for("index"))
+
 
 if __name__ == "__main__":
     app.run(debug=True)
