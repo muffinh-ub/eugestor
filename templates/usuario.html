@@ -133,9 +133,8 @@
         </div>
         <nav class="flex-column">
             <a href="/home" class="nav-link"><i class="bi bi-house-door"></i> <span>Home</span></a>
-            {% if session["usuario"]["is_admin"] %}
-            <a href="/adm" class="nav-link active"><i class="bi bi-shield-lock"></i> <span>Administrador</span></a>
-            {% endif %}
+            <a href="/adm" class="nav-link active"><i class="bi bi-shield-lock"></i><span>Administrador</span></a>
+            <a href="/postar_atualizacao" class="nav-link"><i class="bi bi-send"></i> <span>Postar</span></a>
             <hr style="border-color: #333;">
             <a href="/logout" class="nav-link text-danger"><i class="bi bi-box-arrow-right"></i> <span>Sair</span></a>
         </nav>

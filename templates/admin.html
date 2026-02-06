@@ -15,7 +15,8 @@
             --sidebar-bg: #121212;
             --card-gray: #1E1E1E;
             --text-muted: #A0A0A0;
-            --border-color: #333;
+            /* Sidebar dinâmica: 20% da tela no desktop, mas com limites */
+            --sidebar-width: clamp(240px, 18vw, 300px);
         }
 
         body {
@@ -23,244 +24,166 @@
             background-color: var(--deep-black);
             color: white;
             margin: 0;
-            display: flex;
-            min-height: 100vh;
+            /* Impede o "balanço" lateral no mobile */
+            overflow-x: hidden;
         }
 
-        /* Sidebar - Estilo Identico a Home */
+        /* Sidebar fluida no Desktop */
         .sidebar {
-            width: 260px;
+            width: var(--sidebar-width);
             background-color: var(--sidebar-bg);
-            border-right: 1px solid #222;
-            display: flex;
-            flex-direction: column;
             position: fixed;
             height: 100vh;
+            display: flex;
+            flex-direction: column;
             z-index: 1000;
         }
 
-        .sidebar-header {
-            padding: 2rem;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-orange);
-            text-align: center;
-        }
-
-        .nav-link {
-            color: var(--text-muted);
-            padding: 12px 25px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.3s;
-            border-left: 4px solid transparent;
-            text-decoration: none;
-        }
-
-        .nav-link:hover, .nav-link.active {
-            color: white;
-            background: rgba(230, 81, 0, 0.1);
-            border-left-color: var(--primary-orange);
-        }
-
-        /* Conteúdo Principal */
+        /* Conteúdo Principal Adaptável */
         .main-content {
-            margin-left: 260px;
-            flex: 1;
-            padding: 2rem;
+            /* A margem esquerda é exatamente a largura da sidebar */
+            margin-left: var(--sidebar-width);
+            /* Ocupa o restante da largura de forma fluida */
+            width: calc(100% - var(--sidebar-width));
+            padding: clamp(1rem, 3vw, 3rem); /* Padding aumenta conforme a tela cresce */
+            min-height: 100vh;
         }
 
-        /* Cards de Notícias/Admin */
+        /* Cards Dinâmicos */
         .admin-card {
             background-color: var(--card-gray);
-            border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-left: 4px solid var(--primary-orange);
+            padding: 2.5%; /* Padding interno baseado na largura do card */
+            width: 100%; /* Sempre ocupa a largura total do container */
+            margin-bottom: 2rem;
         }
 
-        .stat-box {
-            background-color: var(--card-gray);
-            border: 1px solid var(--border-color);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border-left: 4px solid var(--primary-orange);
-        }
-
-        /* Tabela Customizada */
-        .table-custom {
-            color: white;
+        /* Tabela Responsiva com Scroll Fluido */
+        .table-responsive {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 8px;
+            overflow-x: auto;
+            border-radius: 8px;
         }
 
-        .table-custom th {
-            color: var(--text-muted);
-            font-weight: 600;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            padding: 12px;
+        .table-custom {
+            width: 100%; /* Força a tabela a preencher o card */
+            min-width: 600px; /* Se a tela for menor que isso, ela gera scroll interno em vez de esmagar */
         }
 
-        .table-custom td {
-            background-color: #181818;
-            padding: 15px 12px;
-            vertical-align: middle;
-        }
-
-        .table-custom tr td:first-child { border-radius: 8px 0 0 8px; }
-        .table-custom tr td:last-child { border-radius: 0 8px 8px 0; }
-
-        .user-link {
-            color: white;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .user-link:hover {
-            color: var(--primary-orange);
-        }
-
-        /* Botão Promover */
-        .btn-adm {
-            background: rgba(230, 81, 0, 0.1);
-            color: var(--primary-orange);
-            border: 1px solid var(--primary-orange);
-            font-size: 0.75rem;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-weight: 600;
-            transition: 0.3s;
-            text-transform: uppercase;
-        }
-
-        .btn-adm:hover {
-            background: var(--primary-orange);
-            color: white;
-        }
-
-        /* Badge para "Sem ações" */
-        .no-actions {
-            color: var(--text-muted);
-            font-size: 0.75rem;
-            font-style: italic;
-            opacity: 0.6;
-        }
-
-        .admin-badge {
-            background: rgba(230, 81, 0, 0.2);
-            color: var(--primary-orange);
-            font-size: 0.7rem;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: 700;
-        }
-
+        /* Responsividade sem "quebra" */
         @media (max-width: 768px) {
-            .sidebar { width: 70px; }
-            .sidebar-header, .nav-link span { display: none; }
-            .main-content { margin-left: 70px; }
-            .hide-mobile { display: none; }
+            .sidebar {
+                display: none; /* Esconde a sidebar lateral */
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%; /* No mobile, ocupa 100% da largura real */
+                padding: 5%; /* Margens laterais de 5% para respirar */
+            }
+
+            .stat-box {
+                width: 100%;
+                margin-bottom: 1rem;
+            }
         }
     </style>
 </head>
 <body>
 
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <a href="/home" style="text-decoration: none; color: inherit;">EuGestor</a>
-        </div>
-        <nav class="flex-column">
-            <a href="/home" class="nav-link">
-                <i class="bi bi-house-door"></i> <span>Home</span>
-            </a>
-            <a href="/adm" class="nav-link active">
-                <i class="bi bi-shield-lock"></i> <span>Administrador</span>
-            </a>
-            <a href="/postar_atualizacao" class="nav-link">
-                <i class="bi bi-send"></i> <span>Postar</span>
-            </a>
-            <hr style="border-color: #333;">
-            <a href="/logout" class="nav-link text-danger">
-                <i class="bi bi-box-arrow-right"></i> <span>Sair</span>
-            </a>
-        </nav>
-    </aside>
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <a href="/home" style="text-decoration: none; color: inherit;">EuGestor</a>
+    </div>
+    <nav class="flex-column">
+        <a href="/home" class="nav-link">
+            <i class="bi bi-house-door"></i> <span>Home</span>
+        </a>
+        <a href="/adm" class="nav-link active">
+            <i class="bi bi-shield-lock"></i> <span>Administrador</span>
+        </a>
+        <a href="/postar_atualizacao" class="nav-link">
+            <i class="bi bi-send"></i> <span>Postar</span>
+        </a>
+        <hr style="border-color: #333;">
+        <a href="/logout" class="nav-link text-danger">
+            <i class="bi bi-box-arrow-right"></i> <span>Sair</span>
+        </a>
+    </nav>
+</aside>
 
-    <main class="main-content">
-        <header class="mb-5">
-            <h1 class="fw-bold">Painel de Controle</h1>
-            <p class="text-secondary">Gerencie os acessos e visualize os dados da plataforma.</p>
-        </header>
+<main class="main-content">
+    <header class="mb-5">
+        <h1 class="fw-bold">Painel de Controle</h1>
+        <p class="text-secondary">Gerencie os acessos e visualize os dados da plataforma.</p>
+    </header>
 
-        <div class="row mb-4">
-            <div class="col-md-4">
-                <div class="stat-box">
-                    <span class="text-muted small fw-bold text-uppercase">Total de Usuários</span>
-                    <h2 class="fw-bold mb-0 mt-1">{{ total_usuarios }}</h2>
-                </div>
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="stat-box">
+                <span class="text-muted small fw-bold text-uppercase">Total de Usuários</span>
+                <h2 class="fw-bold mb-0 mt-1">{{ total_usuarios }}</h2>
             </div>
         </div>
+    </div>
 
-        <section class="admin-card">
-            <h5 class="fw-bold mb-4"><i class="bi bi-people me-2 text-warning"></i>Lista de Usuários</h5>
-            <div class="table-responsive">
-                <table class="table-custom">
-                    <thead>
-                        <tr>
-                            <th>Nome do Usuário</th>
-                            <th class="hide-mobile">E-mail de Acesso</th>
-                            <th>Nível</th>
-                            <th class="text-end">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for u in usuarios %}
-                        <tr>
-                            <td>
-                                <a href="/usuario/{{ u.email_user }}" class="user-link">
-                                    <div class="fw-bold">{{ u.nome_user }}</div>
-                                    <div class="d-block d-md-none text-muted small">{{ u.email_user }}</div>
-                                </a>
-                            </td>
-                            <td class="hide-mobile text-muted small">{{ u.email_user }}</td>
-                            <td>
-                                {% if u.is_admin %}
-                                    <span class="admin-badge">ADMIN</span>
-                                {% else %}
-                                    <span class="text-secondary small fw-bold">USER</span>
-                                {% endif %}
-                            </td>
-                            <td class="text-end">
-                                {% if not u.is_admin %}
-                                    <button onclick="confirmarPromocao({{ u.id_user }}, '{{ u.nome_user }}')" class="btn-adm">
-                                        <i class="bi bi-arrow-up-circle me-1"></i> Promover
-                                    </button>
-                                {% else %}
-                                    <span class="no-actions">Restrito</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </section>
+    <section class="admin-card">
+        <h5 class="fw-bold mb-4"><i class="bi bi-people me-2 text-warning"></i>Lista de Usuários</h5>
+        <div class="table-responsive">
+            <table class="table-custom">
+                <thead>
+                <tr>
+                    <th>Nome do Usuário</th>
+                    <th class="hide-mobile">E-mail de Acesso</th>
+                    <th>Nível</th>
+                    <th class="text-end">Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for u in usuarios %}
+                    <tr>
+                        <td>
+                            <a href="/usuario/{{ u.email_user }}" class="user-link">
+                                <div class="fw-bold">{{ u.nome_user }}</div>
+                                <div class="d-block d-md-none text-muted small">{{ u.email_user }}</div>
+                            </a>
+                        </td>
+                        <td class="hide-mobile text-muted small">{{ u.email_user }}</td>
+                        <td>
+                            {% if u.is_admin %}
+                                <span class="admin-badge">ADMIN</span>
+                            {% else %}
+                                <span class="text-secondary small fw-bold">USER</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            {% if not u.is_admin %}
+                                <button onclick="confirmarPromocao({{ u.id_user }}, '{{ u.nome_user }}')"
+                                        class="btn-adm">
+                                    <i class="bi bi-arrow-up-circle me-1"></i> Promover
+                                </button>
+                            {% else %}
+                                <span class="no-actions">Restrito</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
 
-        <footer class="mt-5 text-center text-muted small">
-            <p>&copy; 2026 JetMoney Consultoria.</p>
-        </footer>
-    </main>
+    <footer class="mt-5 text-center text-muted small">
+        <p>&copy; 2026 JetMoney Consultoria.</p>
+    </footer>
+</main>
 
-    <script>
-        function confirmarPromocao(id, nome) {
-            if (confirm("Promover " + nome + " para Administrador?")) {
-                window.location.href = "/promover_admin/" + id;
-            }
+<script>
+    function confirmarPromocao(id, nome) {
+        if (confirm("Promover " + nome + " para Administrador?")) {
+            window.location.href = "/promover_admin/" + id;
         }
-    </script>
+    }
+</script>
 </body>
 </html>
