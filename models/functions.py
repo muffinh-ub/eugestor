@@ -39,17 +39,11 @@ def buscar_noticias(limite=10):
 def bolsa():
     try:
         api_key = os.getenv("api_bolsa")
-        url = f"https://brapi.dev/api/quote/list?token={api_key}&sortBy=volume&sortOrder=desc"
+        url = f"https://brapi.dev/api/quote/list?token={api_key}"
 
         resposta = requests.get(url)
         dados = resposta.json()
-        stocks = dados.get("stocks", [])
-
-        for stock in stocks:
-            ticker = stock.get("stock")
-            stock["logo"] = f"https://s3-symbol-logo.tradingview.com/br--{ticker}.svg"
-
-        return stocks
+        return dados.get("stocks", []) #pega as acoes
 
     except Exception as erro:
         print(f"Erro ao obter dados: {erro}")
