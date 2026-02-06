@@ -200,7 +200,7 @@
                     {% set preco = acao.close if acao.close is not none else 0 %}
 
                     <div class="stock-card">
-                        <img src="{{ acao.logo }}" alt="Logo" class="logo" onerror="this.src='https://via.placeholder.com/50/222/FFF?text=B3'">
+                        <img src="{{ acao.logo }}" alt="Logo" class="logo">
                         <span class="symbol">{{ acao.stock }}</span>
                         <div class="name" title="{{ acao.name }}">{{ acao.name }}</div>
                         <div class="price">R$ {{ "%.2f"|format(preco) }}</div>

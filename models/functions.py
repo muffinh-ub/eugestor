@@ -39,17 +39,11 @@ def buscar_noticias(limite=10):
 def bolsa():
     try:
         api_key = os.getenv("api_bolsa")
-        url = f"https://brapi.dev/api/quote/list?token={api_key}"
+        f"https://brapi.dev/api/quote/list?token={api_key}&sortBy=volume&sortOrder=desc"
 
         resposta = requests.get(url)
         dados = resposta.json()
-        stocks = dados.get("stocks", [])
-
-        for acao in stocks:
-            ticker = acao.get("stock")
-            acao["logo"] = f"https://s3-sa-east-1.amazonaws.com/bsm-logos/logos/{ticker}.png"
-
-        return stocks
+        return dados.get("stocks", []) #pega as acoes
 
     except Exception as erro:
         print(f"Erro ao obter dados: {erro}")
