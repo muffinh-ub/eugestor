@@ -39,7 +39,7 @@ def buscar_noticias(limite=10):
 def bolsa():
     try:
         client = Brapi(api_key=os.getenv("brapi_token"))
-        result = client.quote.list(limit=100, sort_by="change", sort_order="desc")
+        result = client.quote.list(limit=100, sort_by="change", sort_order="desc", type="stock")
         print(result.stocks)
         return result.stocks
 
