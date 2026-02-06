@@ -15,7 +15,7 @@
             --sidebar-bg: #121212;
             --card-gray: #1E1E1E;
             --text-muted: #A0A0A0;
-            --border-color: #222; /* Sincronizado com dashboard */
+            --border-color: #222;
             --success-green: #2ecc71;
             --danger-red: #e74c3c;
         }
@@ -28,7 +28,7 @@
             min-height: 100vh;
         }
 
-        /* Sidebar - Padrão Dashboard (Fixed e Full Height) */
+        /* Sidebar Fixa */
         .sidebar {
             width: 260px;
             background-color: var(--sidebar-bg);
@@ -36,12 +36,9 @@
             display: flex;
             flex-direction: column;
             position: fixed;
-            top: 0;
-            left: 0;
-            bottom: 0;
+            top: 0; left: 0; bottom: 0;
             height: 100vh;
             z-index: 1000;
-            transition: all 0.3s;
         }
 
         .sidebar-header {
@@ -54,10 +51,8 @@
         .eugestor-link {
             text-decoration: none;
             color: var(--primary-orange);
-            transition: color 0.3s;
+            transition: 0.3s;
         }
-
-        .eugestor-link:hover { color: white; }
 
         .nav-link {
             color: var(--text-muted);
@@ -76,15 +71,13 @@
             border-left-color: var(--primary-orange);
         }
 
-        /* Conteúdo Principal Ajustado */
+        /* Conteúdo */
         .main-content {
             margin-left: 260px;
             padding: 2rem;
             min-height: 100vh;
-            transition: all 0.3s;
         }
 
-        /* Grid de Ações */
         .market-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -107,20 +100,20 @@
             box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
 
+        /* Ajuste das Logos */
         .logo {
-            width: 48px;
-            height: 48px;
+            width: 52px;
+            height: 52px;
             object-fit: contain;
             margin-bottom: 12px;
-            background: white;
-            padding: 5px;
-            border-radius: 8px;
+            background: white; /* Fundo branco para destacar logos transparentes */
+            padding: 6px;
+            border-radius: 10px;
         }
 
         .symbol {
             font-weight: 700;
             font-size: 1.1rem;
-            color: white;
             display: block;
         }
 
@@ -153,7 +146,6 @@
         .neg { color: var(--danger-red); background: rgba(231, 76, 60, 0.1); }
         .neutral { color: var(--text-muted); background: rgba(160, 160, 160, 0.1); }
 
-        /* Responsividade Mobile */
         @media (max-width: 768px) {
             .sidebar { width: 70px; }
             .sidebar-header, .nav-link span { display: none; }
@@ -169,16 +161,10 @@
             <a href="/home" class="eugestor-link">EuGestor</a>
         </div>
         <nav class="flex-column">
-            <a href="/home" class="nav-link">
-                <i class="bi bi-house-door"></i> <span>Home</span>
-            </a>
-            <a href="/b3" class="nav-link active">
-                <i class="bi bi-graph-up-arrow"></i> <span>Bolsa (B3)</span>
-            </a>
+            <a href="/home" class="nav-link"><i class="bi bi-house-door"></i> <span>Home</span></a>
+            <a href="/b3" class="nav-link active"><i class="bi bi-graph-up-arrow"></i> <span>Bolsa (B3)</span></a>
             <hr class="mx-3" style="border-color: #333;">
-            <a href="/logout" class="nav-link text-danger">
-                <i class="bi bi-box-arrow-right"></i> <span>Sair</span>
-            </a>
+            <a href="/logout" class="nav-link text-danger"><i class="bi bi-box-arrow-right"></i> <span>Sair</span></a>
         </nav>
     </aside>
 
@@ -186,7 +172,7 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h1 class="fw-bold h3 mb-1">Mercado Financeiro</h1>
-                <p class="text-secondary small mb-0">Cotações atualizadas da B3.</p>
+                <p class="text-secondary small mb-0">Cotações reais (Logos via B3-Repository).</p>
             </div>
             <span class="badge bg-dark border border-secondary text-secondary p-2">
                 <i class="bi bi-clock-history me-2"></i>Live
@@ -200,7 +186,11 @@
                     {% set preco = acao.close if acao.close is not none else 0 %}
 
                     <div class="stock-card">
-                        <img src="{{ acao.logo }}" alt="Logo" class="logo">
+                        <img src="https://raw.githubusercontent.com/thelogos/B3-Logos/main/logos/{{ acao.stock }}.png"
+                             class="logo"
+                             alt="{{ acao.stock }}"
+                             onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ acao.stock }}&background=E65100&color=fff&bold=true'">
+
                         <span class="symbol">{{ acao.stock }}</span>
                         <div class="name" title="{{ acao.name }}">{{ acao.name }}</div>
                         <div class="price">R$ {{ "%.2f"|format(preco) }}</div>
