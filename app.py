@@ -49,6 +49,11 @@ def atualizacoes_eugestor():
 
 @app.route("/postar_atualizacao")
 def postar_atualizacao():
+    if not session.get("usuario")["is_admin"]:
+        redirect(url_for("home"))
+    elif not session.get("usuario"):
+        redirect(url_for("login"))
+
     return render_template("postar_atualizacao.html")
 
 @app.route("/login")
