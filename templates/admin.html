@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Admin | EuGestor</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
@@ -15,8 +15,6 @@
             --sidebar-bg: #121212;
             --card-gray: #1E1E1E;
             --text-muted: #A0A0A0;
-            /* Sidebar dinâmica: 20% da tela no desktop, mas com limites */
-            --sidebar-width: clamp(240px, 18vw, 300px);
         }
 
         body {
@@ -24,68 +22,149 @@
             background-color: var(--deep-black);
             color: white;
             margin: 0;
-            /* Impede o "balanço" lateral no mobile */
+            min-height: 100vh;
+            /* Evita scroll horizontal acidental */
             overflow-x: hidden;
         }
 
-        /* Sidebar fluida no Desktop */
+        /* Sidebar - Estilo IDÊNTICO à Home */
         .sidebar {
-            width: var(--sidebar-width);
+            width: 260px;
             background-color: var(--sidebar-bg);
-            position: fixed;
-            height: 100vh;
+            border-right: 1px solid #222;
             display: flex;
             flex-direction: column;
+            position: fixed;
+            height: 100vh;
             z-index: 1000;
         }
 
-        /* Conteúdo Principal Adaptável */
-        .main-content {
-            /* A margem esquerda é exatamente a largura da sidebar */
-            margin-left: var(--sidebar-width);
-            /* Ocupa o restante da largura de forma fluida */
-            width: calc(100% - var(--sidebar-width));
-            padding: clamp(1rem, 3vw, 3rem); /* Padding aumenta conforme a tela cresce */
-            min-height: 100vh;
+        .sidebar-header {
+            padding: 2rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
         }
 
-        /* Cards Dinâmicos */
+        .eugestor-link {
+            text-decoration: none;
+            color: var(--primary-orange);
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+            text-decoration: none;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: white;
+            background: rgba(230, 81, 0, 0.1);
+            border-left-color: var(--primary-orange);
+        }
+
+        /* Conteúdo Principal */
+        .main-content {
+            margin-left: 260px; /* Alinhado com a largura da sidebar */
+            padding: 2rem;
+            width: calc(100% - 260px);
+        }
+
+        /* Card Estilo Home adaptado para Admin */
         .admin-card {
             background-color: var(--card-gray);
+            border: 1px solid #333;
             border-radius: 12px;
-            padding: 2.5%; /* Padding interno baseado na largura do card */
-            width: 100%; /* Sempre ocupa a largura total do container */
-            margin-bottom: 2rem;
+            padding: 25px;
+            border-left: 4px solid var(--primary-orange);
         }
 
-        /* Tabela Responsiva com Scroll Fluido */
+        .stat-box {
+            background-color: var(--card-gray);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #333;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Tabelas Responsivas */
         .table-responsive {
+            border: none;
+        }
+
+        table {
+            color: white !important;
             width: 100%;
-            overflow-x: auto;
-            border-radius: 8px;
+            border-collapse: separate;
+            border-spacing: 0 10px;
         }
 
-        .table-custom {
-            width: 100%; /* Força a tabela a preencher o card */
-            min-width: 600px; /* Se a tela for menor que isso, ela gera scroll interno em vez de esmagar */
+        th {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: none !important;
+            padding: 10px !important;
         }
 
-        /* Responsividade sem "quebra" */
+        td {
+            background-color: rgba(255,255,255,0.03);
+            border: none !important;
+            padding: 15px 10px !important;
+            vertical-align: middle;
+        }
+
+        td:first-child { border-radius: 8px 0 0 8px; }
+        td:last-child { border-radius: 0 8px 8px 0; }
+
+        /* Badges e Botões */
+        .admin-badge {
+            background: rgba(230, 81, 0, 0.2);
+            color: var(--primary-orange);
+            font-size: 0.7rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+
+        .btn-adm {
+            background: var(--primary-orange);
+            color: white;
+            border: none;
+            padding: 6px 15px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-adm:hover {
+            filter: brightness(1.2);
+        }
+
+        /* RESPONSIVIDADE CORRIGIDA (Mobile) */
         @media (max-width: 768px) {
             .sidebar {
-                display: none; /* Esconde a sidebar lateral */
+                width: 70px;
             }
-
+            .sidebar-header, .nav-link span {
+                display: none;
+            }
             .main-content {
-                margin-left: 0;
-                width: 100%; /* No mobile, ocupa 100% da largura real */
-                padding: 5%; /* Margens laterais de 5% para respirar */
+                margin-left: 70px;
+                width: calc(100% - 70px);
+                padding: 1.5rem;
             }
-
-            .stat-box {
-                width: 100%;
-                margin-bottom: 1rem;
+            .hide-mobile {
+                display: none;
             }
+            h1 { font-size: 1.5rem; }
         }
     </style>
 </head>
@@ -93,7 +172,7 @@
 
 <aside class="sidebar">
     <div class="sidebar-header">
-        <a href="/home" style="text-decoration: none; color: inherit;">EuGestor</a>
+        <a href="/home" class="eugestor-link">EuGestor</a>
     </div>
     <nav class="flex-column">
         <a href="/home" class="nav-link">
@@ -105,7 +184,7 @@
         <a href="/postar_atualizacao" class="nav-link">
             <i class="bi bi-send"></i> <span>Postar</span>
         </a>
-        <hr style="border-color: #333;">
+        <hr style="border-color: #333; margin: 10px 0;">
         <a href="/logout" class="nav-link text-danger">
             <i class="bi bi-box-arrow-right"></i> <span>Sair</span>
         </a>
@@ -115,7 +194,7 @@
 <main class="main-content">
     <header class="mb-5">
         <h1 class="fw-bold">Painel de Controle</h1>
-        <p class="text-secondary">Gerencie os acessos e visualize os dados da plataforma.</p>
+        <p class="text-secondary">Gerencie os acessos e usuários da plataforma.</p>
     </header>
 
     <div class="row mb-4">
@@ -130,11 +209,11 @@
     <section class="admin-card">
         <h5 class="fw-bold mb-4"><i class="bi bi-people me-2 text-warning"></i>Lista de Usuários</h5>
         <div class="table-responsive">
-            <table class="table-custom">
+            <table>
                 <thead>
                 <tr>
-                    <th>Nome do Usuário</th>
-                    <th class="hide-mobile">E-mail de Acesso</th>
+                    <th>Usuário</th>
+                    <th class="hide-mobile">E-mail</th>
                     <th>Nível</th>
                     <th class="text-end">Ações</th>
                 </tr>
@@ -143,10 +222,8 @@
                 {% for u in usuarios %}
                     <tr>
                         <td>
-                            <a href="/usuario/{{ u.email_user }}" class="user-link">
-                                <div class="fw-bold">{{ u.nome_user }}</div>
-                                <div class="d-block d-md-none text-muted small">{{ u.email_user }}</div>
-                            </a>
+                            <div class="fw-bold">{{ u.nome_user }}</div>
+                            <div class="d-md-none text-muted" style="font-size: 0.75rem;">{{ u.email_user }}</div>
                         </td>
                         <td class="hide-mobile text-muted small">{{ u.email_user }}</td>
                         <td>
@@ -160,10 +237,10 @@
                             {% if not u.is_admin %}
                                 <button onclick="confirmarPromocao({{ u.id_user }}, '{{ u.nome_user }}')"
                                         class="btn-adm">
-                                    <i class="bi bi-arrow-up-circle me-1"></i> Promover
+                                    <i class="bi bi-arrow-up"></i> <span class="hide-mobile">Promover</span>
                                 </button>
                             {% else %}
-                                <span class="no-actions">Restrito</span>
+                                <span class="text-muted small">N/A</span>
                             {% endif %}
                         </td>
                     </tr>
