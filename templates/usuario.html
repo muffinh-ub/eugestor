@@ -116,10 +116,11 @@
             transition: all 0.2s;
         }
 
-.bg_ {
-    background-color: var(--primary-orange) !important;
-    color: white !important;
-}
+        .bg_ {
+            padding: 9px;
+            background-color: var(--primary-orange) !important;
+            color: white !important;
+        }
 
         .back-button:hover {
             color: white;
@@ -164,13 +165,13 @@
             <div class="row align-items-center">
                 <div class="col-md-auto mb-3 mb-md-0">
                     <div class="avatar-circle">
-                        {{ usuario['nome'] | upper }}
+                        {{ usuario['nome'][0] | upper }}
                     </div>
                 </div>
                 <div class="col">
                     <h2 class="mb-1 fw-bold">{{ usuario['nome'] }}</h2>
                     <p class="text-light mb-0"><i class="bi bi-envelope me-2"></i>{{ usuario['email'] }}</p>
-                    <small class="text-muted">ID: #{{ usuario['id'] }}</small>
+                    <small class="text-light">ID: #{{ usuario['id'] }}</small>
                 </div>
                 <div class="col-md-auto">
                     {% if usuario['adm'] %}
@@ -179,10 +180,10 @@
                         </span>
                     {% else %}
                         <span class="badge bg-secondary">
-                            CLIENTE
+                            USUÁRIO
                         </span>
                     {% endif %}
-</div>
+                </div>
             </div>
         </div>
 
