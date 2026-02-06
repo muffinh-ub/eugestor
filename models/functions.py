@@ -39,7 +39,7 @@ def buscar_noticias(limite=10):
 def bolsa():
     try:
         api_key = os.getenv("api_bolsa")
-        f"https://brapi.dev/api/quote/list?token={api_key}&sortBy=volume&sortOrder=desc"
+        url = f"https://brapi.dev/api/quote/list?token={api_key}&sortBy=volume&sortOrder=desc"
 
         resposta = requests.get(url)
         dados = resposta.json()
