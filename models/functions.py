@@ -1,7 +1,7 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from .sql import sql
 import requests, os
-
+from brapi import Brapi
 db = sql()
 
 
@@ -38,15 +38,12 @@ def buscar_noticias(limite=10):
 
 def bolsa():
     try:
-        api_key = os.getenv("api_bolsa")
-        url = f"https://brapi.dev/api/quote/list?token={api_key}"
-
-        resposta = requests.get(url)
-        dados = resposta.json()
-        return dados.get("stocks", []) #pega as acoes
-
+        client = Brapi(os.getenv("api_bolsa"))
+        resultado = client.list_stocks(sortBy='stock', sortOrder='asc', limit=1000)
+        acoes = resultado.stocks
+        return acoes
     except Exception as erro:
-        print(f"Erro ao obter dados: {erro}")
+        print(f"Erro ao obter ações: {erro}")
         return []
 
 def atualizar_senha(email, senha):
