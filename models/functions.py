@@ -38,10 +38,10 @@ def buscar_noticias(limite=10):
 
 def bolsa():
     try:
-        client = Brapi(os.getenv("api_bolsa"))
-        resultado = client.list_stocks(sortBy='stock', sortOrder='asc', limit=1000)
-        acoes = resultado.stocks
-        return acoes
+        client = Brapi(api_key=os.getenv("brapi_token"))
+        result = client.quote.list(limit=100, sort_by="change", sort_order="desc")
+        return result.stocks
+
     except Exception as erro:
         print(f"Erro ao obter ações: {erro}")
         return []
