@@ -47,7 +47,7 @@ def bolsa():
 
         for stock in stocks:
             ticker = stock.get("stock")
-            stock['logo'] = f"https://s3-symbol-logo.tradingview.com/br--{ticker}.svg"
+            stock["logo"] = f"https://s3-symbol-logo.tradingview.com/br--{ticker}.svg"
 
         return stocks
 
