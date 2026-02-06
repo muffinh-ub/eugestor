@@ -258,7 +258,7 @@ def detalhe_usuario(email):
         redirect(url_for("login"))
 
     usuario = db.search("select id_user as id, nome_user as nome, email_user as email, "
-                        "cadastro_user as cadastro, professional_licence as licence, is_admin as adm from tbusuario where email_user = %s",
+                        "cadastro_user::date as cadastro, professional_licence as licence, is_admin as adm from tbusuario where email_user = %s",
                         (email,), one=True)
     return render_template('usuario.html', usuario=usuario)
 
