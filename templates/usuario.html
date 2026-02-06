@@ -116,9 +116,10 @@
             transition: all 0.2s;
         }
 
-        .bg_ {
-            background-color: var(--primary-orange);
-        }
+.bg_ {
+    background-color: var(--primary-orange) !important;
+    color: white !important;
+}
 
         .back-button:hover {
             color: white;
@@ -172,10 +173,16 @@
                     <small class="text-muted">ID: #{{ usuario['id'] }}</small>
                 </div>
                 <div class="col-md-auto">
-                        <span class="badge {{ '.bg_ text-light' if usuario['adm'] else 'bg-primary' }}">
-                            {{ 'ADMIN' if usuario['adm'] else 'CLIENTE' }}
+                    {% if usuario['adm'] %}
+                        <span class="badge bg_">
+                            <i class="bi bi-shield-check me-1"></i> ADMIN
                         </span>
-                </div>
+                    {% else %}
+                        <span class="badge bg-secondary">
+                            CLIENTE
+                        </span>
+                    {% endif %}
+</div>
             </div>
         </div>
 
