@@ -104,15 +104,32 @@
 
         /* Link do Usuário */
         .user-link {
+            position: relative;
             text-decoration: none;
             color: white;
-            display: block;
-            transition: opacity 0.2s;
+            transition: color 0.3s ease;
+        }
+
+        .user-link::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: var(--primary-orange);
+            transform-origin: bottom right;
+            transition: transform 0.4s cubic-bezier(0.86, 0, 0.07, 1);
         }
 
         .user-link:hover {
-            opacity: 0.8;
             color: var(--primary-orange);
+        }
+
+        .user-link:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
         }
 
         .admin-badge {
@@ -219,7 +236,7 @@
                                     <i class="bi bi-arrow-up"></i>
                                 </button>
                             {% else %}
-                                <span class="text-muted" style="font-size: 0.7rem;">-</span>
+                                <span class="text-light" style="font-size: 0.7rem;">Sem ações</span>
                             {% endif %}
                         </td>
                     </tr>
